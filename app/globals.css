@@ -908,7 +908,7 @@ html.lock {
 
 .portrait-arch {
   position: relative;
-  height: 150px;
+  height: 155px;
   border-radius: 999px 999px 0 0;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(198, 40, 73, 0.7), rgba(84, 19, 41, 0.9));
@@ -926,9 +926,9 @@ html.lock {
 }
 .portrait-img {
   position: absolute;
-  bottom: 0;
+  bottom: -32px;
   left: 50%;
-  width: 128%;
+  width: 120%;
   max-width: none;
   transform: translateX(-50%);
   object-fit: contain;
@@ -1015,7 +1015,11 @@ html.lock {
     grid-template-columns: minmax(0, 1fr) 125px;
   }
   .portrait-arch {
-    height: 135px;
+    height: 140px;
+  }
+  .portrait-img {
+    bottom: -28px;
+    width: 120%;
   }
   .teaching-badge {
     padding: 10px;
