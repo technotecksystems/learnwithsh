@@ -1,0 +1,28 @@
+{
+  "name": "Sir Hammad Academy \u2014 Midnight Crimson / Cyan type",
+  "colors": {
+    "background": "#0B1026",
+    "backgroundDeep": "#070D20",
+    "backgroundElevated": "#131A36",
+    "burgundy": "#541329",
+    "crimson": "#C62849",
+    "crimsonBright": "#FF315B",
+    "metallicGold": "#FFBD59",
+    "electricBlue": "#4778F5",
+    "electricCyan": "#18D7F5",
+    "text": "#F7F7FC",
+    "textSecondary": "#B6C3DC",
+    "border": "#344A86"
+  },
+  "typography": {
+    "heading": "Sora or Manrope",
+    "body": "Inter or Manrope"
+  },
+  "design_rules": [
+    "Gold reserved for buttons, icon details and small badges\u2014not heading text",
+    "White heading text with electric cyan emphasis",
+    "Dark navy base with burgundy/crimson lighting",
+    "Electric blue outer glows and 1px borders",
+    "Actual copy/prices/testimonials must come from Sir Hammad; screenshot figures are illustrative"
+  ]
+}

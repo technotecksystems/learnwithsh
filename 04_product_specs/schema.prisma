@@ -1,0 +1,110 @@
+// Prisma schema (PostgreSQL) — starting point
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Role { STUDENT ADMIN }
+enum UserStatus { ACTIVE SUSPENDED }
+enum EnrollmentStatus { ACTIVE EXPIRED REVOKED }
+enum PayMethod { CARD BANK_TRANSFER MANUAL }
+enum OrderStatus { PENDING_PAYMENT PENDING_REVIEW PAID REJECTED REFUNDED }
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  phone         String?
+  passwordHash  String
+  role          Role     @default(STUDENT)
+  status        UserStatus @default(ACTIVE)
+  mustResetPw   Boolean  @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime @default(now())
+  deletedAt     DateTime?
+  enrollments   Enrollment[]
+  progress      LectureProgress[]
+  orders        Order[]
+  sessions      Session[]
+}
+
+model Session { id String @id @default(cuid()) userId String user User @relation(fields: [userId], references: [id]) device String? ip String? createdAt DateTime @default(now()) revokedAt DateTime? }
+
+model Course {
+  id          String @id @default(cuid())
+  slug        String @unique
+  level       String
+  code        String?
+  name        String
+  blurb       String
+  pricePkr    Int?
+  published   Boolean @default(false)
+  modules     Module[]
+  enrollments Enrollment[]
+  resources   Resource[]
+  orders      Order[]
+}
+
+model Module { id String @id @default(cuid()) courseId String course Course @relation(fields: [courseId], references: [id]) title String order Int lectures Lecture[] }
+
+model Lecture {
+  id          String @id @default(cuid())
+  moduleId    String
+  module      Module @relation(fields: [moduleId], references: [id])
+  title       String
+  order       Int
+  videoId     String?   // provider asset id
+  durationSec Int?
+  isPreview   Boolean @default(false)
+  published   Boolean @default(false)
+  progress    LectureProgress[]
+}
+
+model Resource { id String @id @default(cuid()) courseId String course Course @relation(fields: [courseId], references: [id]) title String kind String fileKey String }
+
+model Enrollment {
+  id        String @id @default(cuid())
+  userId    String
+  courseId  String
+  user      User   @relation(fields: [userId], references: [id])
+  course    Course @relation(fields: [courseId], references: [id])
+  status    EnrollmentStatus @default(ACTIVE)
+  expiresAt DateTime?
+  grantedBy String?
+  createdAt DateTime @default(now())
+  @@unique([userId, courseId])
+}
+
+model LectureProgress {
+  id          String @id @default(cuid())
+  userId      String
+  lectureId   String
+  user        User    @relation(fields: [userId], references: [id])
+  lecture     Lecture @relation(fields: [lectureId], references: [id])
+  positionSec Int @default(0)
+  watchedSec  Int @default(0)
+  completedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  @@unique([userId, lectureId])
+}
+
+model Order {
+  id        String @id @default(cuid())
+  userId    String?
+  email     String
+  name      String
+  phone     String?
+  courseId  String
+  user      User?  @relation(fields: [userId], references: [id])
+  course    Course @relation(fields: [courseId], references: [id])
+  amountPkr Int
+  method    PayMethod
+  status    OrderStatus @default(PENDING_PAYMENT)
+  gatewayRef String?
+  receiptKey String?
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage { id String @id @default(cuid()) name String email String level String? body String createdAt DateTime @default(now()) handled Boolean @default(false) }
+model AuditLog { id String @id @default(cuid()) actorId String action String target String? meta Json? createdAt DateTime @default(now()) }
+model SiteSetting { key String @id value Json }  // prices, bank details, contact info, testimonials, results (all placeholders until confirmed)

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" fill="none" role="img">
+<defs><linearGradient id="stroke" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F43359" stop-opacity="0"/><stop offset=".45" stop-color="#F43359" stop-opacity=".95"/><stop offset="1" stop-color="#C62849" stop-opacity="0"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="20"/></filter></defs><path d="M-50 470C235 280 300 90 920 30" stroke="#ED194B" stroke-width="50" opacity=".36" filter="url(#glow)"/>
+<path d="M-50 470C235 280 300 90 920 30" stroke="url(#stroke)" stroke-width="6"/>
+</svg>

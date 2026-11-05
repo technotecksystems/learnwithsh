@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="620" viewBox="0 0 1920 620" fill="none" role="img">
+<defs><linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0B1026"/><stop offset="1" stop-color="#121A39"/></linearGradient>
+<radialGradient id="red" cx="0" cy="0" r="1" gradientTransform="translate(1750 120) scale(730 570)"><stop stop-color="#A11640" stop-opacity=".60"/><stop offset="1" stop-color="#A11640" stop-opacity="0"/></radialGradient>
+<radialGradient id="blue" cx="0" cy="0" r="1" gradientTransform="translate(150 580) scale(760 470)"><stop stop-color="#204FD4" stop-opacity=".35"/><stop offset="1" stop-color="#204FD4" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="620" rx="28" fill="url(#base)"/>
+<rect width="1920" height="620" rx="28" fill="url(#blue)"/><rect width="1920" height="620" rx="28" fill="url(#red)"/>
+<path d="M1370 0L900 620H1100L1580 0" fill="#6E153D" opacity=".17"/>
+<path d="M1850 0L1370 620" stroke="#FF325E" opacity=".21" stroke-width="4"/>
+<rect x="2" y="2" width="1916" height="616" rx="26" stroke="#4778F5" stroke-opacity=".65" stroke-width="3"/>
+</svg>

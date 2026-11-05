@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" fill="none" role="img">
+<defs><linearGradient id="halo" x1="70" y1="200" x2="800" y2="700" gradientUnits="userSpaceOnUse"><stop stop-color="#4778F5" stop-opacity="0"/><stop offset=".27" stop-color="#18D7F5"/><stop offset=".5" stop-color="#4778F5"/><stop offset=".77" stop-color="#0050D1"/><stop offset="1" stop-color="#4778F5" stop-opacity="0"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="22"/></filter></defs><circle cx="450" cy="450" r="310" stroke="#168DFB" stroke-width="45" opacity=".40" filter="url(#glow)"/>
+<circle cx="450" cy="450" r="310" stroke="url(#halo)" stroke-width="25"/>
+<circle cx="450" cy="450" r="248" stroke="#5C8BFA" stroke-opacity=".23" stroke-width="2"/>
+<circle cx="450" cy="450" r="365" stroke="#5C8BFA" stroke-opacity=".11" stroke-width="2"/>
+</svg>

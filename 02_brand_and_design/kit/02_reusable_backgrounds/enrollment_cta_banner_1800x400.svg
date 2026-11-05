@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="400" viewBox="0 0 1800 400" fill="none" role="img">
+<defs><linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1B183D"/><stop offset=".42" stop-color="#44112E"/><stop offset="1" stop-color="#5B0B35"/></linearGradient>
+<radialGradient id="crim" cx="0" cy="0" r="1" gradientTransform="translate(1480 290) rotate(170) scale(850 440)"><stop stop-color="#F72159" stop-opacity=".84"/><stop offset="1" stop-color="#F72159" stop-opacity="0"/></radialGradient>
+<linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#02B9FF"/><stop offset=".45" stop-color="#4778F5"/><stop offset="1" stop-color="#FF3B6F"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="15"/></filter></defs><rect x="8" y="8" width="1784" height="384" rx="36" fill="url(#base)"/>
+<rect x="8" y="8" width="1784" height="384" rx="36" fill="url(#crim)"/>
+<path d="M1080 400L1800 70L1800 260L1380 400Z" fill="#FF2B5C" opacity=".28"/>
+<path d="M1170 400C1390 220 1550 180 1800 120" stroke="#FF3A6D" stroke-width="22" opacity=".35" filter="url(#glow)"/>
+<path d="M1170 400C1390 220 1550 180 1800 120" stroke="#FF3A6D" stroke-width="5" opacity=".93"/>
+<rect x="8" y="8" width="1784" height="384" rx="36" stroke="url(#edge)" stroke-width="7"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="220" viewBox="0 0 960 220" role="img">
+<g fill="none" stroke="#F7F7FC" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<path d="M34 63C83 46 120 54 149 76V184C113 160 76 160 34 177V63Z"/>
+<path d="M149 76C179 54 216 46 265 63V177C223 160 185 160 149 184V76Z"/>
+<path d="M149 76V184"/>
+</g>
+<path d="M38 169C79 157 111 159 145 179" fill="none" stroke="#FFBD59" stroke-width="10" stroke-linecap="round"/>
+<text x="300" y="104" fill="#F7F7FC" font-family="Arial,Helvetica,sans-serif" font-size="72" font-weight="800" letter-spacing="-2">Sir Hammad</text>
+<text x="303" y="169" fill="#FFBD59" font-family="Arial,Helvetica,sans-serif" font-size="41" font-weight="700" letter-spacing="15">ACADEMY</text>
+</svg>

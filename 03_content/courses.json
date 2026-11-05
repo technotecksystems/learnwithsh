@@ -1,0 +1,105 @@
+{
+  "_note": "Topic outlines and syllabus codes were drafted from general knowledge of the Cambridge syllabuses, NOT supplied by Sir Hammad. He must confirm the real lecture plan per pack. Prices are null until confirmed.",
+  "courses": [
+    {
+      "slug": "o-level-accounting",
+      "level": "O Level",
+      "code": "CAMBRIDGE 7707",
+      "name": "O Level Accounting",
+      "blurb": "Start from the ground up. Build double-entry fluency, then work towards complete financial statements.",
+      "topics": [
+        "Accounting fundamentals & double entry",
+        "Books of prime entry & ledger accounts",
+        "Trial balance, errors & suspense accounts",
+        "Bank reconciliation & control accounts",
+        "Depreciation, irrecoverable debts & provisions",
+        "Accruals, prepayments & year-end adjustments",
+        "Sole trader final accounts",
+        "Partnerships, clubs & societies",
+        "Limited company accounts",
+        "Manufacturing accounts & incomplete records",
+        "Ratio analysis & interpretation"
+      ],
+      "pricePkr": null,
+      "includes": [
+        "Full lecture recordings",
+        "Past paper sessions",
+        "Formulae booklet",
+        "Student portal access"
+      ]
+    },
+    {
+      "slug": "as-level-accounting",
+      "level": "AS Level",
+      "code": "CAMBRIDGE 9706 · AS",
+      "name": "AS Level Accounting",
+      "blurb": "Sharpen technique on the AS papers with a deeper treatment of the core accounting system.",
+      "topics": [
+        "The accounting system & double entry",
+        "Inventory valuation (FIFO, AVCO)",
+        "Non-current assets & depreciation",
+        "Irrecoverable debts & allowances",
+        "Control accounts & bank reconciliation",
+        "Errors, suspense & journal corrections",
+        "Sole trader accounts & incomplete records",
+        "Partnership accounts",
+        "Company accounts basics",
+        "Ratio analysis & business decisions"
+      ],
+      "pricePkr": null,
+      "includes": [
+        "Full lecture recordings",
+        "Past paper sessions",
+        "Formulae booklet",
+        "Student portal access"
+      ]
+    },
+    {
+      "slug": "a-level-accounting",
+      "level": "A Level",
+      "code": "CAMBRIDGE 9706 · A2",
+      "name": "A Level Accounting",
+      "blurb": "Go deeper into company reporting, then master costing, budgeting and investment decisions.",
+      "topics": [
+        "Changes in partnerships & goodwill",
+        "Company share capital & reserves",
+        "Statement of cash flows",
+        "Published accounts & interpretation",
+        "Marginal & absorption costing",
+        "Budgeting & budgetary control",
+        "Standard costing & variance analysis",
+        "Capital investment appraisal (payback, ARR, NPV)",
+        "Advanced ratio analysis"
+      ],
+      "pricePkr": null,
+      "includes": [
+        "Full lecture recordings",
+        "Past paper sessions",
+        "Formulae booklet",
+        "Student portal access"
+      ]
+    },
+    {
+      "slug": "revision-past-papers",
+      "level": "Revision",
+      "code": "REVISION PACK",
+      "name": "Revision & Past Papers",
+      "blurb": "For the final stretch: timed practice, worked solutions and examiner-style technique.",
+      "topics": [
+        "Exam technique & time management",
+        "Topic-wise past paper sessions",
+        "Worked solutions, mark by mark",
+        "Common mistakes to avoid",
+        "Formulae & format sheets",
+        "Mock paper walkthroughs"
+      ],
+      "pricePkr": null,
+      "includes": [
+        "Full lecture recordings",
+        "Past paper sessions",
+        "Formulae booklet",
+        "Student portal access"
+      ]
+    }
+  ]
+}

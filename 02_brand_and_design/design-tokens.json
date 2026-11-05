@@ -1,0 +1,34 @@
+{
+  "name": "Learn with SH",
+  "colors": {
+    "background": "#0B1026",
+    "backgroundDeep": "#070D20",
+    "surface": "#131A36",
+    "burgundy": "#541329",
+    "crimson": "#C62849",
+    "crimsonSoft": "#E8416A",
+    "gold": "#FFBD59",
+    "electricBlue": "#4778F5",
+    "cyan": "#18D7F5",
+    "text": "#F7F7FC",
+    "textMuted": "#A9B6D3",
+    "border": "rgba(255,255,255,0.11)"
+  },
+  "fonts": {
+    "heading": "Bricolage Grotesque 800",
+    "body": "DM Sans 400/500/700",
+    "label": "Space Mono 400/700 uppercase, letter-spacing .16em",
+    "handwriting": "Caveat 700 (footer doodles only)"
+  },
+  "radius": {
+    "card": "22px",
+    "pill": "999px",
+    "button": "999px"
+  },
+  "rules": [
+    "Gold is for buttons, small badges and the SH monogram; headings are white with cyan emphasis",
+    "Electric blue only as a subtle glow, never as a dominant fill",
+    "Dark navy base with burgundy/crimson lighting",
+    "All unverified content must be placeholders"
+  ]
+}

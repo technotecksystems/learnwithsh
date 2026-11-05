@@ -1,0 +1,24 @@
+/* Sir Hammad Academy: import into global.css or theme.css */
+:root {
+  --h-background: #0B1026;
+  --h-background-deep: #070D20;
+  --h-surface: #131A36;
+  --h-burgundy: #541329;
+  --h-crimson: #C62849;
+  --h-gold: #FFBD59;
+  --h-blue: #4778F5;
+  --h-cyan: #18D7F5;
+  --h-white: #F7F7FC;
+  --h-muted: #B6C3DC;
+  --h-border: #344A86;
+  --h-radius: 18px;
+}
+body { background: var(--h-background); color: var(--h-white); }
+.h-hero { background-image:url('/hammad-assets/hero_midnight_crimson_blue_glow_1920x940.svg'); background-size:cover; background-position:center; }
+.h-title-emphasis { color:var(--h-cyan); }
+.h-button-gold { color:#091226; background:linear-gradient(135deg,#FFE089,#FFBD59 60%,#F59F2D); border-radius:999px; }
+.h-panel { background:linear-gradient(145deg,rgba(20,29,60,.95),rgba(11,16,38,.92)); border:1px solid rgba(71,120,245,.46); border-radius:var(--h-radius); box-shadow:0 12px 38px rgba(0,0,0,.28); }
+.h-blue-glow { box-shadow:0 0 1px rgba(24,215,245,.8),0 0 26px rgba(71,120,245,.21); }
+.h-portrait { object-fit:contain; object-position:bottom; }
+.h-cta { background:url('/hammad-assets/enrollment_cta_banner_1800x400.svg') center / cover no-repeat; }
+@media(max-width:767px) { .h-hero{background-position:65% center;} }
