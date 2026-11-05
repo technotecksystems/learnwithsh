@@ -33,7 +33,7 @@ export function Hero() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-[40px] sm:text-[56px] min-[1200px]:text-[76px] leading-[1.02] text-white">
+            <h1 className="text-[32px] min-[420px]:text-[38px] sm:text-[56px] min-[1200px]:text-[76px] leading-[1.04] text-white">
               Where accounting{" "}
               <span className="headline-highlight">finally balances.</span>
             </h1>

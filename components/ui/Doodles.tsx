@@ -2,7 +2,7 @@ import React from "react";
 
 export function Doodles() {
   return (
-    <div className="w-full relative z-[2] py-8 border-t border-dashed border-[#FFBD59]/35 mt-8">
+    <div className="w-full relative z-[2] py-8 border-t border-dashed border-[#FFBD59]/35 mt-8 overflow-hidden">
       <div
         className="max-w-[1200px] mx-auto px-6 flex justify-between items-center gap-3 sm:gap-5 flex-wrap"
         aria-hidden="true"

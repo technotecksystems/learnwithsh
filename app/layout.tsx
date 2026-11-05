@@ -1,10 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, DM_Sans, Space_Mono, Caveat } from "next/font/google";
 import "./globals.css";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { SITE_CONFIG } from "@/content/site";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0B1026",
+};
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],

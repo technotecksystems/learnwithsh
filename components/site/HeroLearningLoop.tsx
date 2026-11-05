@@ -44,6 +44,7 @@ const widgetStyles = String.raw`
     position: relative;
     isolation: isolate;
     width: min(100%, 460px);
+    max-width: 100%;
     min-height: 196px;
     box-sizing: border-box;
     overflow: hidden;

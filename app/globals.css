@@ -25,6 +25,15 @@
   margin: 0;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-text-size-adjust: 100%;
+}
+
 html {
   scroll-padding-top: 90px;
   scroll-behavior: smooth;
@@ -35,9 +44,13 @@ body {
   background: var(--bg);
   color: var(--wh);
   line-height: 1.6;
-  overflow-x: hidden;
-  position: relative;
   min-height: 100vh;
+}
+
+#app {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Fixed ambient radial glows */
@@ -124,7 +137,12 @@ h1, h2, h3, h4, h5, h6 {
 .headline-highlight {
   position: relative;
   color: var(--cy);
-  white-space: nowrap;
+  display: inline-block;
+}
+@media (min-width: 480px) {
+  .headline-highlight {
+    white-space: nowrap;
+  }
 }
 .headline-highlight::after {
   content: "";
