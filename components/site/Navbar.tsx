@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 
@@ -123,9 +124,16 @@ export function Navbar() {
           className="group flex items-center gap-2.5 font-heading text-lg font-extrabold tracking-tight whitespace-nowrap"
           onClick={() => setMobileMenuOpen(false)}
         >
-          <i className="w-[38px] h-[38px] rounded-xl grid place-items-center font-heading font-extrabold text-[15px] not-italic text-[#1a1205] bg-gradient-to-br from-[#FFE089] via-[#FFBD59] to-[#F59F2D] shadow-[0_6px_18px_-4px_rgba(255,189,89,0.6)] rotate-[-8deg] transition-transform duration-300 group-hover:rotate-[8deg] group-hover:scale-105">
-            SH
-          </i>
+          <div className="relative w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_2px_12px_rgba(255,189,89,0.35)]">
+            <Image
+              src="/images/logo.png"
+              alt="Learn with SH Logo"
+              width={40}
+              height={40}
+              priority
+              className="w-full h-full object-contain"
+            />
+          </div>
           <span className="text-white text-base sm:text-lg">
             Learn with <b className="text-gold">SH</b>
           </span>
