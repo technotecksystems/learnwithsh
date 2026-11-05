@@ -7,6 +7,7 @@ import { SITE_CONFIG } from "@/content/site";
 
 export function CourseTabs() {
   const [activeTab, setActiveTab] = useState(0);
+  const [isTopicsOpen, setIsTopicsOpen] = useState(false);
   const currentCourse = COURSES[activeTab];
 
   return (
@@ -98,31 +99,59 @@ export function CourseTabs() {
             </div>
           </div>
 
-          {/* Right Column: Topics Covered List */}
-          <div>
-            <div className="font-mono text-xs text-[#A9B6D3] uppercase tracking-wider mb-3.5">
-              What you&apos;ll cover ({currentCourse.topics.length} core topics)
-            </div>
+          {/* Right Column: Topics Covered Dropdown Menu */}
+          <div className="flex flex-col justify-start">
+            {/* Dropdown Toggle Header */}
+            <button
+              type="button"
+              onClick={() => setIsTopicsOpen(!isTopicsOpen)}
+              aria-expanded={isTopicsOpen}
+              className="w-full flex items-center justify-between gap-3 p-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-cyan/40 transition-all duration-200 group text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                <span className="font-mono text-xs font-bold text-white uppercase tracking-wider group-hover:text-cyan transition-colors">
+                  What you&apos;ll cover
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-white/5 border border-white/10 text-gold">
+                  {currentCourse.topics.length} core topics
+                </span>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {currentCourse.topics.map((topic, i) => (
-                <div
-                  key={topic}
-                  className="group flex items-start gap-3 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] text-xs sm:text-[13px] leading-snug transition-all duration-300 hover:border-cyan hover:bg-cyan/[0.06] hover:translate-x-1"
-                >
-                  <span className="font-mono font-bold text-[11px] text-gold pt-0.5">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-white group-hover:text-cyan transition-colors">
-                    {topic}
-                  </span>
+              {/* + Toggle Button */}
+              <span
+                className={`w-7 h-7 rounded-lg border border-gold/40 bg-gold/10 flex items-center justify-center text-gold font-bold text-base transition-transform duration-300 flex-shrink-0 ${
+                  isTopicsOpen ? "rotate-45 border-cyan text-cyan bg-cyan/10" : ""
+                }`}
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </button>
+
+            {/* Core Topics Dropdown Content */}
+            {isTopicsOpen && (
+              <div className="mt-3.5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {currentCourse.topics.map((topic, i) => (
+                    <div
+                      key={topic}
+                      className="group flex items-start gap-3 p-3.5 rounded-xl border border-white/10 bg-white/[0.03] text-xs sm:text-[13px] leading-snug transition-all duration-300 hover:border-cyan hover:bg-cyan/[0.06] hover:translate-x-1"
+                    >
+                      <span className="font-mono font-bold text-[11px] text-gold pt-0.5">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-white group-hover:text-cyan transition-colors">
+                        {topic}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <p className="mt-4 text-xs text-[#A9B6D3]/80">
-              * Topic outline follows Cambridge standards. Sir Hammad will confirm the exact final lecture plan per pack.
-            </p>
+                <p className="mt-3 text-xs text-[#A9B6D3]/80">
+                  * Topic outline follows Cambridge standards. Sir Hammad will confirm the exact final lecture plan per pack.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
