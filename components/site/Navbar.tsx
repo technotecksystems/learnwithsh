@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { MobileMenu } from "@/components/site/MobileMenu";
+import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -21,8 +21,8 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const navRef = useRef<HTMLDivElement>(null);
-  const burgerRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const burgerRef = useRef<HTMLButtonElement>(null);
   const lastScrolledRef = useRef(false);
 
   // Optimized Scroll Listener using requestAnimationFrame & threshold latching
@@ -107,117 +107,126 @@ export function Navbar() {
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-[60] transition-colors duration-300 pt-3.5 px-4 pb-2 ${
-        scrolled ? "sc" : ""
-      }`}
-      style={{ transform: "translateZ(0)" }}
-    >
-      <div
-        className={`max-w-[1180px] mx-auto flex items-center justify-between gap-4 py-2 px-3 sm:px-4 rounded-full border border-white/10 backdrop-blur-xl transition-[background-color,box-shadow] duration-300 ${
-          scrolled
-            ? "bg-[#070D20]/90 shadow-[0_14px_40px_-12px_rgba(0,0,0,0.7),0_0_30px_rgba(198,40,73,0.18)]"
-            : "bg-[#0B1026]/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-[100] transition-colors duration-300 pt-3.5 px-4 pb-2 ${
+          scrolled ? "sc" : ""
         }`}
+        style={{ transform: "translateZ(0)" }}
       >
-        {/* Logo / Monogram */}
-        <Link
-          href="/"
-          className="group flex items-center gap-2.5 font-heading text-lg font-extrabold tracking-tight whitespace-nowrap"
-          onClick={() => setMobileMenuOpen(false)}
+        <div
+          className={`max-w-[1180px] mx-auto flex items-center justify-between gap-4 py-2 px-3 sm:px-4 rounded-full border border-white/10 backdrop-blur-xl transition-[background-color,box-shadow] duration-300 ${
+            scrolled
+              ? "bg-[#070D20]/90 shadow-[0_14px_40px_-12px_rgba(0,0,0,0.7),0_0_30px_rgba(198,40,73,0.18)]"
+              : "bg-[#0B1026]/60 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+          }`}
         >
-          <div className="relative w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_2px_12px_rgba(255,189,89,0.35)]">
-            <Image
-              src="/images/logo.png"
-              alt="Learn with SH Logo"
-              width={40}
-              height={40}
-              priority
-              className="w-full h-full object-contain"
+          {/* Logo / Monogram */}
+          <Link
+            href="/"
+            className="group flex items-center gap-2.5 font-heading text-lg font-extrabold tracking-tight whitespace-nowrap"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_2px_12px_rgba(255,189,89,0.35)]">
+              <Image
+                src="/images/logo.png"
+                alt="Learn with SH Logo"
+                width={40}
+                height={40}
+                priority
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <span className="text-white text-base sm:text-lg">
+              Learn with <b className="text-gold">SH</b>
+            </span>
+          </Link>
+
+          {/* Center Pill with Sliding Indicator (Desktop) */}
+          <nav
+            ref={navRef}
+            onMouseLeave={updateIndicatorToActive}
+            className="relative hidden min-[1000px]:flex items-center mx-auto p-1 rounded-full bg-white/[0.04] border border-white/10"
+          >
+            {/* Sliding Indicator */}
+            <span
+              className="absolute top-1 bottom-1 rounded-full pointer-events-none transition-[left,width,opacity] duration-350 ease-[cubic-bezier(0.25,1,0.5,1)]"
+              style={{
+                left: `${indicatorStyle.left}px`,
+                width: `${indicatorStyle.width}px`,
+                opacity: indicatorStyle.opacity,
+                background: "linear-gradient(135deg, #C62849, #541329)",
+                boxShadow: "0 0 20px rgba(198, 40, 73, 0.6)",
+                willChange: "left, width",
+                transform: "translateZ(0)",
+              }}
             />
+
+            {NAV_LINKS.map((link) => {
+              const active = isLinkActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  ref={(el) => {
+                    if (el) linksRef.current.set(link.href, el);
+                  }}
+                  onMouseEnter={(e) => handleLinkHover(e.currentTarget)}
+                  className={`relative z-10 px-4 py-2 text-[13px] font-medium rounded-full transition-colors whitespace-nowrap ${
+                    active ? "text-white font-semibold" : "text-[#cfd8ee] hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right Action Buttons (Desktop) */}
+          <div className="hidden min-[1000px]:flex items-center gap-2">
+            <Link
+              href="/portal"
+              className="btn-ghost px-4 py-2 text-[13px] font-bold rounded-full"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/courses"
+              className="btn-gold px-4 py-2 text-[13px] font-bold rounded-full"
+            >
+              Enrol now ↗
+            </Link>
           </div>
-          <span className="text-white text-base sm:text-lg">
-            Learn with <b className="text-gold">SH</b>
-          </span>
-        </Link>
 
-        {/* Center Pill with Sliding Indicator (Desktop) */}
-        <nav
-          ref={navRef}
-          onMouseLeave={updateIndicatorToActive}
-          className="relative hidden min-[1000px]:flex items-center mx-auto p-1 rounded-full bg-white/[0.04] border border-white/10"
-        >
-          {/* Sliding Indicator */}
-          <span
-            className="absolute top-1 bottom-1 rounded-full pointer-events-none transition-[left,width,opacity] duration-350 ease-[cubic-bezier(0.25,1,0.5,1)]"
-            style={{
-              left: `${indicatorStyle.left}px`,
-              width: `${indicatorStyle.width}px`,
-              opacity: indicatorStyle.opacity,
-              background: "linear-gradient(135deg, #C62849, #541329)",
-              boxShadow: "0 0 20px rgba(198, 40, 73, 0.6)",
-              willChange: "left, width",
-              transform: "translateZ(0)",
-            }}
-          />
-
-          {NAV_LINKS.map((link) => {
-            const active = isLinkActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                ref={(el) => {
-                  if (el) linksRef.current.set(link.href, el);
-                }}
-                onMouseEnter={(e) => handleLinkHover(e.currentTarget)}
-                className={`relative z-10 px-4 py-2 text-[13px] font-medium rounded-full transition-colors whitespace-nowrap ${
-                  active ? "text-white font-semibold" : "text-[#cfd8ee] hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Right Action Buttons (Desktop) */}
-        <div className="hidden min-[1000px]:flex items-center gap-2">
-          <Link
-            href="/portal"
-            className="btn-ghost px-4 py-2 text-[13px] font-bold rounded-full"
+          {/* Mobile Hamburger Button with 2-line morphing X */}
+          <button
+            ref={burgerRef}
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu-overlay"
+            className="bgr min-[1000px]:hidden ml-auto"
           >
-            Log in
-          </Link>
-          <Link
-            href="/courses"
-            className="btn-gold px-4 py-2 text-[13px] font-bold rounded-full"
-          >
-            Enrol now ↗
-          </Link>
+            <i />
+            <i />
+          </button>
         </div>
+      </header>
 
-        {/* Mobile Hamburger Button */}
-        <button
-          ref={burgerRef}
-          type="button"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-iris-menu"
-          className="sh-burger min-[1001px]:hidden"
-        >
-          <i />
-          <i />
-        </button>
-      </div>
-
-      {/* Full-screen Iris Mobile Menu */}
+      {/* Fullscreen Mobile Iris Navigation Menu */}
       <MobileMenu
         isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
+        onClose={(returnFocus) => {
+          setMobileMenuOpen(false);
+          if (returnFocus && burgerRef.current) {
+            burgerRef.current.focus({ preventScroll: true });
+          }
+        }}
         burgerRef={burgerRef}
+        links={NAV_LINKS}
+        activeHref={pathname}
       />
-    </header>
+    </>
   );
 }

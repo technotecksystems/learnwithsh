@@ -1,229 +1,190 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { SITE_CONFIG } from "@/content/site";
-
-const MENU_ROUTES = [
-  { label: "Home", href: "/" },
-  { label: "Courses", href: "/courses" },
-  { label: "About", href: "/about" },
-  { label: "Resources", href: "/resources" },
-  { label: "Student Portal", href: "/portal" },
-  { label: "Contact", href: "/contact" },
-];
 
 interface MobileMenuProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (returnFocus?: boolean) => void;
   burgerRef: React.RefObject<HTMLButtonElement>;
+  links: Array<{ href: string; label: string }>;
+  activeHref: string;
 }
 
-export function MobileMenu({ isOpen, onClose, burgerRef }: MobileMenuProps) {
-  const pathname = usePathname();
+export function MobileMenu({
+  isOpen,
+  onClose,
+  burgerRef,
+  links,
+  activeHref,
+}: MobileMenuProps) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
-  const navTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const focusTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Set circular iris expansion origin from burger bounding box
-  const updateOrigin = useCallback(() => {
-    if (!burgerRef.current || !menuRef.current) return;
-    const rect = burgerRef.current.getBoundingClientRect();
-    const x = `${rect.left + rect.width / 2}px`;
-    const y = `${rect.top + rect.height / 2}px`;
-    menuRef.current.style.setProperty("--x", x);
-    menuRef.current.style.setProperty("--y", y);
-  }, [burgerRef]);
+  // Position origin (--x, --y) at the center of the burger button
+  const setOrigin = () => {
+    if (burgerRef.current && menuRef.current) {
+      const rect = burgerRef.current.getBoundingClientRect();
+      menuRef.current.style.setProperty("--x", `${rect.left + rect.width / 2}px`);
+      menuRef.current.style.setProperty("--y", `${rect.top + rect.height / 2}px`);
+    }
+  };
 
-  // Handle open/close side effects (scroll lock, focus, vibration, inert)
+  // Lock scroll when open & manage accessibility
   useEffect(() => {
-    const menuEl = menuRef.current;
-    if (!menuEl) return;
-
     if (isOpen) {
-      updateOrigin();
-      menuEl.removeAttribute("inert");
-      menuEl.setAttribute("aria-hidden", "false");
+      setOrigin();
+      const oldHtmlOverflow = document.documentElement.style.overflow;
+      const oldBodyOverflow = document.body.style.overflow;
 
-      // Lock scroll
-      const originalHtmlOverflow = document.documentElement.style.overflow;
-      const originalBodyOverflow = document.body.style.overflow;
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
       document.documentElement.classList.add("lock");
 
-      // Gentle haptic feedback if available
-      if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try {
-          navigator.vibrate(8);
-        } catch {
-          // ignore
-        }
-      }
-
-      // Shift focus to active link or first link
-      focusTimerRef.current = setTimeout(() => {
-        const activeLink =
-          listRef.current?.querySelector<HTMLAnchorElement>('a[aria-current="page"]') ||
-          listRef.current?.querySelector<HTMLAnchorElement>("a");
-        activeLink?.focus({ preventScroll: true });
+      // Set focus to the active link or the first link after iris opens
+      const timer = setTimeout(() => {
+        if (!menuRef.current) return;
+        const activeLink = menuRef.current.querySelector<HTMLAnchorElement>('a[aria-current="page"]');
+        const firstLink = menuRef.current.querySelector<HTMLAnchorElement>("a");
+        (activeLink || firstLink)?.focus({ preventScroll: true });
       }, 350);
 
-      return () => {
-        document.documentElement.style.overflow = originalHtmlOverflow;
-        document.body.style.overflow = originalBodyOverflow;
-        document.documentElement.classList.remove("lock");
-        if (focusTimerRef.current) clearTimeout(focusTimerRef.current);
-      };
-    } else {
-      // Closing state: make inert after transition
-      const timer = setTimeout(() => {
-        menuEl.setAttribute("inert", "");
-        menuEl.setAttribute("aria-hidden", "true");
-      }, 700);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, updateOrigin]);
-
-  // Update origin on resize & close on desktop
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth > 1000 && isOpen) {
-        onClose();
-      } else if (isOpen) {
-        updateOrigin();
-      }
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-    return () => window.removeEventListener("resize", onResize);
-  }, [isOpen, onClose, updateOrigin]);
-
-  // Keyboard navigation & Tab focus trapping inside dialog
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-        burgerRef.current?.focus({ preventScroll: true });
-        return;
-      }
-
-      if (e.key === "Tab") {
-        const menuEl = menuRef.current;
-        const burgerEl = burgerRef.current;
-        if (!menuEl || !burgerEl) return;
-
-        const focusables = Array.from(
-          menuEl.querySelectorAll<HTMLElement>('a[href]:not([tabindex="-1"]), button:not([disabled])')
-        ).filter((el) => el.getClientRects().length > 0);
-
-        const allFocusable = [...focusables, burgerEl];
-        if (!allFocusable.length) return;
-
-        const first = allFocusable[0];
-        const last = allFocusable[allFocusable.length - 1];
-        const current = document.activeElement;
-
-        if (e.shiftKey && (current === first || !allFocusable.includes(current as HTMLElement))) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
           e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && (current === last || !allFocusable.includes(current as HTMLElement))) {
-          e.preventDefault();
-          first.focus();
+          onClose(true);
+          return;
         }
-      }
-    };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+        if (e.key === "Tab" && menuRef.current) {
+          const focusables = Array.from(
+            menuRef.current.querySelectorAll<HTMLElement>(
+              'a[href]:not([tabindex="-1"]), button:not([disabled])'
+            )
+          );
+          if (burgerRef.current) {
+            focusables.push(burgerRef.current);
+          }
+
+          if (!focusables.length) return;
+
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          const current = document.activeElement;
+
+          if (e.shiftKey && (current === first || !focusables.includes(current as HTMLElement))) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && (current === last || !focusables.includes(current as HTMLElement))) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      };
+
+      const handleResize = () => {
+        if (window.innerWidth > 1000) {
+          onClose(false);
+        } else {
+          setOrigin();
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        clearTimeout(timer);
+        document.documentElement.style.overflow = oldHtmlOverflow;
+        document.body.style.overflow = oldBodyOverflow;
+        document.documentElement.classList.remove("lock");
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, [isOpen, onClose, burgerRef]);
 
-  // Clean navigation with graceful exit transition
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Normal browser behavior for modifier/external clicks
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-
+  const handleNavigate = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
-    onClose();
+    onClose(false);
 
-    if (navTimerRef.current) clearTimeout(navTimerRef.current);
-
-    if (pathname === href) {
-      burgerRef.current?.focus({ preventScroll: true });
-      return;
-    }
-
-    navTimerRef.current = setTimeout(() => {
+    // Smooth navigation delay matching iris retract
+    setTimeout(() => {
       router.push(href);
     }, 280);
-  };
-
-  const isCurrentPage = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
   };
 
   return (
     <div
       ref={menuRef}
-      id="mobile-iris-menu"
+      id="mobile-menu-overlay"
       role="dialog"
       aria-modal="true"
-      aria-label="Main menu"
-      inert={!isOpen}
-      aria-hidden={!isOpen}
-      className={`sh-menu min-[1001px]:hidden ${isOpen ? "open" : ""}`}
+      aria-label="Main navigation menu"
+      className={`mobile-iris-menu ${isOpen ? "open" : ""}`}
+      style={{
+        pointerEvents: isOpen ? "auto" : "none",
+        visibility: isOpen ? "visible" : "hidden",
+      }}
     >
-      <div className="sh-mi">
-        {/* Eyebrow Label */}
-        <div className="sh-eyebrow">Menu</div>
+      <div className="mi-container">
+        {/* Eyebrow */}
+        <div className="menu-eyebrow">Menu</div>
 
-        {/* Big Numbered Rows */}
-        <nav aria-label="Primary mobile navigation">
-          <ol ref={listRef}>
-            {MENU_ROUTES.map((route, idx) => {
-              const active = isCurrentPage(route.href);
-              const num = String(idx + 1).padStart(2, "0");
+        {/* Big numbered navigation links */}
+        <nav aria-label="Primary Mobile Navigation">
+          <ol ref={listRef} className="menu-list">
+            {links.map((link, index) => {
+              const isActive =
+                link.href === "/"
+                  ? activeHref === "/"
+                  : activeHref.startsWith(link.href);
+
               return (
-                <li key={route.href} style={{ "--i": idx } as React.CSSProperties}>
-                  <Link
-                    href={route.href}
-                    onClick={(e) => handleNavClick(e, route.href)}
-                    className={active ? "on" : ""}
-                    aria-current={active ? "page" : undefined}
+                <li
+                  key={link.href}
+                  className="menu-item"
+                  style={{ "--i": index } as React.CSSProperties}
+                >
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavigate(link.href, e)}
+                    className={`menu-link ${isActive ? "on" : ""}`}
+                    aria-current={isActive ? "page" : undefined}
                   >
-                    <span className="n">{num}</span>
-                    <span className="t">{route.label}</span>
+                    <span className="n font-mono">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="t font-heading">
+                      {link.label}
+                    </span>
                     <span className="ar" aria-hidden="true">
                       ↗
                     </span>
-                  </Link>
+                  </a>
                 </li>
               );
             })}
           </ol>
         </nav>
 
-        {/* Footer of Menu */}
-        <div className="sh-mf">
-          <div className="sh-pr">
-            {/* Left Fact & Handwritten note */}
+        {/* Menu Footer */}
+        <div className="menu-footer">
+          {/* Confirmed fact badge & Sir Hammad Arch Portrait */}
+          <div className="pr-row">
             <div>
-              <div className="sh-bd">
-                <b>7</b>
+              <div className="teaching-badge">
+                <b className="font-heading">7</b>
                 <span>
                   years teaching
                   <br />
                   experience
                 </span>
               </div>
-              <span className="sh-note">
+              <span className="caveat-note">
                 keep it balanced!
                 <svg viewBox="0 0 80 30" aria-hidden="true">
                   <path d="M4 6c20 22 46 22 68 4" />
@@ -232,48 +193,48 @@ export function MobileMenu({ isOpen, onClose, burgerRef }: MobileMenuProps) {
               </span>
             </div>
 
-            {/* Arch Portrait of Sir Hammad peeking up */}
-            <div className="sh-arch">
+            {/* Arch Portrait of Sir Hammad */}
+            <div className="portrait-arch">
               <Image
                 src="/images/portrait_transparent.png"
-                alt="Sir Sahibzada Hammad"
-                width={240}
-                height={280}
+                alt="Sir Sahibzada Hammad, accounting educator"
+                width={200}
+                height={200}
                 priority
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[128%] max-w-none object-contain"
+                className="portrait-img"
               />
             </div>
           </div>
 
-          {/* Action Buttons: Log in + Enrol now */}
-          <div className="sh-ac">
-            <Link
+          {/* Action Buttons */}
+          <div className="action-buttons-row">
+            <a
               href="/portal"
-              onClick={(e) => handleNavClick(e, "/portal")}
-              className="sh-mbtn"
+              onClick={(e) => handleNavigate("/portal", e)}
+              className="menu-action-btn ghost"
             >
               Log in
-            </Link>
-            <Link
+            </a>
+            <a
               href="/courses"
-              onClick={(e) => handleNavClick(e, "/courses")}
-              className="sh-mbtn sh-mgd"
+              onClick={(e) => handleNavigate("/courses", e)}
+              className="menu-action-btn gold"
             >
               Enrol now ↗
-            </Link>
+            </a>
           </div>
 
-          {/* Metadata Footer: Instagram & Credit */}
-          <div className="sh-mt">
+          {/* Meta footer row */}
+          <div className="menu-meta-row">
             <a
               href={SITE_CONFIG.contact.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline"
+              className="hover:text-cyan transition-colors"
             >
               Instagram ({SITE_CONFIG.contact.instagramHandle}) ↗
             </a>
-            <em>made by Rayan</em>
+            <em className="italic text-white/90">made by Rayan</em>
           </div>
         </div>
       </div>
