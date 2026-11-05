@@ -36,14 +36,31 @@ export function Footer() {
               progress.
             </p>
 
-            <a
-              href={SITE_CONFIG.placeholders.contact.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-cyan transition-colors"
-            >
-              Instagram ↗
-            </a>
+            <div className="mt-4 flex flex-col gap-2 text-xs">
+              <a
+                href={SITE_CONFIG.contact.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 font-bold text-[#25D366] hover:text-[#52e78b] transition-colors"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                WhatsApp: {SITE_CONFIG.contact.whatsapp} ↗
+              </a>
+              <a
+                href={`tel:${SITE_CONFIG.contact.phoneRaw}`}
+                className="inline-flex items-center gap-1.5 text-[#cfd8ee] hover:text-cyan font-medium transition-colors"
+              >
+                Call: {SITE_CONFIG.contact.phone}
+              </a>
+              <a
+                href={SITE_CONFIG.contact.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-gold hover:text-cyan font-semibold transition-colors"
+              >
+                Instagram: {SITE_CONFIG.contact.instagramHandle} ↗
+              </a>
+            </div>
           </div>
 
           {/* Column 2: EXPLORE */}
@@ -115,6 +132,14 @@ export function Footer() {
               <Link href="/contact" className="hover:text-cyan transition-colors">
                 Contact & Inquiries
               </Link>
+              <a
+                href={SITE_CONFIG.contact.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#25D366] transition-colors inline-flex items-center gap-1.5"
+              >
+                WhatsApp Sir Hammad ↗
+              </a>
             </div>
           </div>
         </div>

@@ -184,9 +184,20 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
               >
                 Inquire & Enrol with Sir Hammad ↗
               </Link>
+              <a
+                href={`https://wa.me/923332748765?text=${encodeURIComponent(
+                  `Hi Sir Hammad, I would like to enrol in the ${course.name} (${course.code}) course.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 text-center text-xs font-bold rounded-full justify-center inline-flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-colors"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                Quick Enrol via WhatsApp ↗
+              </a>
               <Link
                 href="/portal"
-                className="btn-ghost w-full py-3 text-center text-xs font-bold rounded-full justify-center"
+                className="btn-ghost w-full py-2.5 text-center text-xs font-bold rounded-full justify-center"
               >
                 Already Enrolled? Log in to Portal
               </Link>

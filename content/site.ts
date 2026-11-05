@@ -38,6 +38,19 @@ export const SITE_CONFIG = {
     ],
   },
 
+  // Verified contact channels (Provided by Sir Hammad)
+  contact: {
+    phone: "+92 333 2748765",
+    phoneRaw: "+923332748765",
+    whatsapp: "+92 333 2748765",
+    whatsappUrl: "https://wa.me/923332748765",
+    instagram: "https://instagram.com/accountswithsh",
+    instagramHandle: "@accountswithsh",
+    instagramPendingVerification: "sahibzadahammad7",
+    email: "[Email address to be confirmed]",
+    teachingHours: "[Teaching & support hours to be confirmed]",
+  },
+
   // Clearly marked placeholders to be confirmed by Sir Hammad
   placeholders: {
     priceLabel: "PKR —",
@@ -45,10 +58,11 @@ export const SITE_CONFIG = {
     contact: {
       instagram: "https://instagram.com/accountswithsh",
       instagramHandle: "@accountswithsh",
-      instagramPendingVerification: "sahibzadahammad7", // Note: confirm whether sahibzadahammad7 or @accountswithsh is primary
-      whatsapp: "[WhatsApp number to be confirmed]",
+      instagramPendingVerification: "sahibzadahammad7",
+      whatsapp: "+92 333 2748765",
+      whatsappUrl: "https://wa.me/923332748765",
+      phone: "+92 333 2748765",
       email: "[Email address to be confirmed]",
-      phone: "[Phone number to be confirmed]",
       teachingHours: "[Teaching & support hours to be confirmed]",
     },
     bankTransfer: {
