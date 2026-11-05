@@ -620,3 +620,359 @@ h1, h2, h3, h4, h5, h6 {
     transform: scaleX(1) !important;
   }
 }
+
+
+/* =====================================================================
+   MOBILE IRIS MENU (Transformed from mobile-menu.html)
+   Text sizes reduced by 25% for elegant mobile balance
+   ===================================================================== */
+html.lock,
+body.lock {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* Burger morph button */
+.bgr {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--bd);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bgr:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.bgr i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1), width 0.4s, background 0.3s;
+}
+.bgr i:nth-child(1) {
+  width: 20px;
+  transform: translate(-50%, -4px) rotate(0);
+}
+.bgr i:nth-child(2) {
+  width: 12px;
+  transform: translate(calc(-50% + 4px), 4px) rotate(0);
+}
+.bgr[aria-expanded="true"] {
+  background: linear-gradient(135deg, var(--cri), var(--bur));
+  border-color: rgba(255, 189, 89, 0.6);
+  box-shadow: 0 0 24px rgba(198, 40, 73, 0.6);
+}
+.bgr[aria-expanded="true"] i {
+  width: 20px;
+  background: #fff;
+}
+.bgr[aria-expanded="true"] i:nth-child(1) {
+  transform: translate(-50%, 0) rotate(45deg);
+}
+.bgr[aria-expanded="true"] i:nth-child(2) {
+  transform: translate(-50%, 0) rotate(-45deg);
+}
+
+/* Iris Overlay */
+.iris-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  visibility: hidden;
+  background: radial-gradient(520px 420px at 100% 0, rgba(198, 40, 73, 0.5), transparent 65%),
+    radial-gradient(480px 380px at 0 100%, rgba(84, 19, 41, 0.7), transparent 65%),
+    linear-gradient(180deg, #0b1026, #070d20);
+  clip-path: circle(0px at var(--x, 88%) var(--y, 40px));
+  transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.7s;
+}
+.iris-menu.open {
+  visibility: visible;
+  clip-path: circle(150vmax at var(--x, 88%) var(--y, 40px));
+  transition: clip-path 0.85s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s;
+}
+.iris-menu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask: linear-gradient(#000, transparent 80%);
+  mask: linear-gradient(#000, transparent 80%);
+}
+.iris-mi {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(96px + env(safe-area-inset-top, 0px)) 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  max-width: 540px;
+  margin: 0 auto;
+}
+.iris-eyebrow {
+  font: 400 9px var(--font-space-mono), monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.iris-eyebrow::before {
+  content: "";
+  width: 20px;
+  height: 2px;
+  background: var(--gold);
+}
+.iris-menu ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.iris-menu li {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.iris-menu.open li {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.25s + var(--i) * 0.06s),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.25s + var(--i) * 0.06s);
+}
+.iris-menu li a {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bd);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.iris-menu li a::before {
+  content: "";
+  position: absolute;
+  inset: 0 -22px;
+  background: linear-gradient(90deg, rgba(198, 40, 73, 0.35), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.iris-menu li a:active::before,
+.iris-menu li a:hover::before {
+  opacity: 1;
+}
+.iris-menu .n {
+  font: 400 9px var(--font-space-mono), monospace;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  position: relative;
+}
+/* Text size decreased by 25% from clamp(34px, 11.5vw, 56px) */
+.iris-menu .t {
+  font: 800 clamp(26px, 8.6vw, 42px)/1.05 var(--font-bricolage), system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  position: relative;
+  color: var(--wh);
+  transition: color 0.3s, transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.iris-menu li a:active .t,
+.iris-menu li a:hover .t {
+  color: var(--cy);
+  transform: translateX(6px);
+}
+.iris-menu .ar {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--bd);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--wh);
+  transition: 0.3s;
+}
+.iris-menu li a:active .ar,
+.iris-menu li a:hover .ar {
+  background: var(--gold);
+  color: #1a1205;
+  border-color: var(--gold);
+  transform: rotate(45deg);
+}
+.iris-menu li a.on .t {
+  color: var(--cy);
+}
+.iris-menu li a.on .t::after {
+  content: "You’re here";
+  font: 400 7.5px var(--font-space-mono), monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-left: 10px;
+  vertical-align: middle;
+  border: 1px solid rgba(255, 189, 89, 0.5);
+  border-radius: 99px;
+  padding: 2px 7px;
+  display: inline-block;
+}
+
+/* Bottom block */
+.iris-mf {
+  margin-top: auto;
+  padding-top: 22px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.iris-menu.open .iris-mf {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.8s 0.65s, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.65s;
+}
+.iris-pr {
+  display: grid;
+  grid-template-columns: 1fr 136px;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+.iris-bd {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bd);
+  width: fit-content;
+}
+.iris-bd b {
+  font: 800 23px/1 var(--font-bricolage), sans-serif;
+  color: var(--gold);
+}
+.iris-bd span {
+  font-size: 8.5px;
+  line-height: 1.25;
+  color: #cfd8ee;
+}
+.iris-note {
+  font: 700 21px/1 var(--font-caveat), cursive;
+  color: var(--cri-soft);
+  transform: rotate(-5deg);
+  margin-top: 14px;
+  display: block;
+}
+.iris-note svg {
+  display: block;
+  width: 55px;
+  margin: 2px 0 0 6px;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.iris-arch {
+  position: relative;
+  height: 136px;
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(198, 40, 73, 0.7), rgba(84, 19, 41, 0.9));
+  border: 1px solid rgba(255, 189, 89, 0.4);
+  border-bottom: 0;
+}
+.iris-arch::before {
+  content: "";
+  position: absolute;
+  inset: 6px 6px 0;
+  border-radius: 999px 999px 0 0;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.iris-ac {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 8px;
+}
+.iris-btn {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 11.5px;
+  border: 1px solid var(--bd);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+  color: var(--wh);
+}
+.iris-btn:active {
+  transform: scale(0.97);
+}
+.iris-btn-gd {
+  color: #1a1205;
+  border: 0;
+  background: linear-gradient(135deg, #ffe089, var(--gold) 60%, #f59f2d);
+  box-shadow: 0 10px 30px -8px rgba(255, 189, 89, 0.7);
+}
+.iris-btn-gd::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+  transform: skewX(-20deg);
+  animation: iris-shine 3.4s infinite;
+}
+@keyframes iris-shine {
+  to {
+    left: 140%;
+  }
+}
+.iris-mt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 9.5px;
+  color: var(--mu);
+}
+.iris-mt a {
+  color: var(--gold);
+  font-weight: 700;
+}
+.iris-mt em {
+  font-size: 9.5px;
+  font-style: italic;
+}
+
+@media (min-width: 1001px) {
+  .iris-menu,
+  .bgr {
+    display: none !important;
+  }
+}

@@ -4,14 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
   { href: "/about", label: "About" },
   { href: "/resources", label: "Resources" },
-  { href: "/contact", label: "Contact" },
   { href: "/portal", label: "Student Portal" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Navbar() {
@@ -20,6 +21,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const navRef = useRef<HTMLDivElement>(null);
+  const burgerRef = useRef<HTMLButtonElement>(null);
   const linksRef = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const lastScrolledRef = useRef(false);
 
@@ -106,7 +108,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 pt-3.5 px-4 pb-2 ${
+      className={`fixed top-0 left-0 right-0 z-[60] transition-colors duration-300 pt-3.5 px-4 pb-2 ${
         scrolled ? "sc" : ""
       }`}
       style={{ transform: "translateZ(0)" }}
@@ -195,65 +197,30 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Hamburger Button */}
+        {/* Mobile Hamburger Morph Button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          ref={burgerRef}
+          id="bgr"
+          type="button"
           aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
-          className="min-[1000px]:hidden p-2 text-white hover:text-gold transition-colors ml-auto"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-iris-menu"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="bgr min-[1000px]:hidden ml-auto"
         >
-          {mobileMenuOpen ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
+          <i />
+          <i />
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {mobileMenuOpen && (
-        <div className="min-[1000px]:hidden mt-2 p-4 rounded-2xl bg-[#070D20]/95 border border-white/10 backdrop-blur-2xl shadow-2xl flex flex-col gap-2 animate-in fade-in slide-in-from-top-4 duration-200">
-          {NAV_LINKS.map((link) => {
-            const active = isLinkActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-[#C62849] text-white font-semibold"
-                    : "text-[#cfd8ee] hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-          <div className="pt-2 border-t border-white/10 flex flex-col gap-2 mt-1">
-            <Link
-              href="/portal"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-ghost text-center py-2.5 rounded-xl text-sm font-bold"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/courses"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-gold text-center py-2.5 rounded-xl text-sm font-bold"
-            >
-              Enrol now ↗
-            </Link>
-          </div>
-        </div>
-      )}
+      {/* Fullscreen Iris Mobile Menu */}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        pathname={pathname}
+        links={NAV_LINKS}
+        burgerRef={burgerRef}
+      />
     </header>
   );
 }
