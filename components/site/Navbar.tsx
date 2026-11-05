@@ -4,15 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { MobileMenu } from "./MobileMenu";
+import { MobileMenu } from "@/components/site/MobileMenu";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
   { href: "/about", label: "About" },
   { href: "/resources", label: "Resources" },
-  { href: "/portal", label: "Student Portal" },
   { href: "/contact", label: "Contact" },
+  { href: "/portal", label: "Student Portal" },
 ];
 
 export function Navbar() {
@@ -197,28 +197,25 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Hamburger Morph Button */}
+        {/* Mobile Hamburger Button */}
         <button
           ref={burgerRef}
-          id="bgr"
           type="button"
-          aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-iris-menu"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="bgr min-[1000px]:hidden ml-auto"
+          className="sh-burger min-[1001px]:hidden"
         >
           <i />
           <i />
         </button>
       </div>
 
-      {/* Fullscreen Iris Mobile Menu */}
+      {/* Full-screen Iris Mobile Menu */}
       <MobileMenu
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        pathname={pathname}
-        links={NAV_LINKS}
         burgerRef={burgerRef}
       />
     </header>

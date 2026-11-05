@@ -1,69 +1,108 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useCallback } from "react";
 import { SITE_CONFIG } from "@/content/site";
 
-interface NavLink {
-  href: string;
-  label: string;
-}
+const MENU_ROUTES = [
+  { label: "Home", href: "/" },
+  { label: "Courses", href: "/courses" },
+  { label: "About", href: "/about" },
+  { label: "Resources", href: "/resources" },
+  { label: "Student Portal", href: "/portal" },
+  { label: "Contact", href: "/contact" },
+];
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  pathname: string;
-  links: NavLink[];
   burgerRef: React.RefObject<HTMLButtonElement>;
 }
 
-export function MobileMenu({
-  isOpen,
-  onClose,
-  pathname,
-  links,
-  burgerRef,
-}: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, burgerRef }: MobileMenuProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+  const navTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const focusTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Position the circle expansion directly at the center of the burger button
+  // Set circular iris expansion origin from burger bounding box
+  const updateOrigin = useCallback(() => {
+    if (!burgerRef.current || !menuRef.current) return;
+    const rect = burgerRef.current.getBoundingClientRect();
+    const x = `${rect.left + rect.width / 2}px`;
+    const y = `${rect.top + rect.height / 2}px`;
+    menuRef.current.style.setProperty("--x", x);
+    menuRef.current.style.setProperty("--y", y);
+  }, [burgerRef]);
+
+  // Handle open/close side effects (scroll lock, focus, vibration, inert)
   useEffect(() => {
-    const updateCenter = () => {
-      if (!burgerRef.current || !menuRef.current) return;
-      const r = burgerRef.current.getBoundingClientRect();
-      menuRef.current.style.setProperty("--x", `${r.left + r.width / 2}px`);
-      menuRef.current.style.setProperty("--y", `${r.top + r.height / 2}px`);
-    };
-
-    updateCenter();
+    const menuEl = menuRef.current;
+    if (!menuEl) return;
 
     if (isOpen) {
+      updateOrigin();
+      menuEl.removeAttribute("inert");
+      menuEl.setAttribute("aria-hidden", "false");
+
+      // Lock scroll
+      const originalHtmlOverflow = document.documentElement.style.overflow;
+      const originalBodyOverflow = document.body.style.overflow;
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
       document.documentElement.classList.add("lock");
-      document.body.classList.add("lock");
 
-      // Auto-focus the active link or first link
-      const focusTimer = setTimeout(() => {
-        if (!menuRef.current) return;
+      // Gentle haptic feedback if available
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+          navigator.vibrate(8);
+        } catch {
+          // ignore
+        }
+      }
+
+      // Shift focus to active link or first link
+      focusTimerRef.current = setTimeout(() => {
         const activeLink =
-          (menuRef.current.querySelector("a.on") as HTMLElement) ||
-          (menuRef.current.querySelector("ol a") as HTMLElement);
+          listRef.current?.querySelector<HTMLAnchorElement>('a[aria-current="page"]') ||
+          listRef.current?.querySelector<HTMLAnchorElement>("a");
         activeLink?.focus({ preventScroll: true });
-      }, 400);
-
-      window.addEventListener("resize", updateCenter, { passive: true });
+      }, 350);
 
       return () => {
-        clearTimeout(focusTimer);
-        window.removeEventListener("resize", updateCenter);
+        document.documentElement.style.overflow = originalHtmlOverflow;
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.classList.remove("lock");
+        if (focusTimerRef.current) clearTimeout(focusTimerRef.current);
       };
     } else {
-      document.documentElement.classList.remove("lock");
-      document.body.classList.remove("lock");
+      // Closing state: make inert after transition
+      const timer = setTimeout(() => {
+        menuEl.setAttribute("inert", "");
+        menuEl.setAttribute("aria-hidden", "true");
+      }, 700);
+      return () => clearTimeout(timer);
     }
-  }, [isOpen, burgerRef]);
+  }, [isOpen, updateOrigin]);
 
-  // Handle ESC and Tab trap
+  // Update origin on resize & close on desktop
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 1000 && isOpen) {
+        onClose();
+      } else if (isOpen) {
+        updateOrigin();
+      }
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, [isOpen, onClose, updateOrigin]);
+
+  // Keyboard navigation & Tab focus trapping inside dialog
   useEffect(() => {
     if (!isOpen) return;
 
@@ -76,53 +115,56 @@ export function MobileMenu({
       }
 
       if (e.key === "Tab") {
-        if (!menuRef.current || !burgerRef.current) return;
-        const focusable = [
-          burgerRef.current,
-          ...Array.from(
-            menuRef.current.querySelectorAll<HTMLElement>(
-              'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-            )
-          ),
-        ];
+        const menuEl = menuRef.current;
+        const burgerEl = burgerRef.current;
+        if (!menuEl || !burgerEl) return;
 
-        if (focusable.length === 0) return;
+        const focusables = Array.from(
+          menuEl.querySelectorAll<HTMLElement>('a[href]:not([tabindex="-1"]), button:not([disabled])')
+        ).filter((el) => el.getClientRects().length > 0);
 
-        const currentIndex = focusable.indexOf(
-          document.activeElement as HTMLElement
-        );
+        const allFocusable = [...focusables, burgerEl];
+        if (!allFocusable.length) return;
 
-        if (e.shiftKey) {
-          if (currentIndex <= 0) {
-            e.preventDefault();
-            focusable[focusable.length - 1].focus();
-          }
-        } else {
-          if (currentIndex === focusable.length - 1 || currentIndex === -1) {
-            e.preventDefault();
-            focusable[0].focus();
-          }
+        const first = allFocusable[0];
+        const last = allFocusable[allFocusable.length - 1];
+        const current = document.activeElement;
+
+        if (e.shiftKey && (current === first || !allFocusable.includes(current as HTMLElement))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (current === last || !allFocusable.includes(current as HTMLElement))) {
+          e.preventDefault();
+          first.focus();
         }
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose, burgerRef]);
 
-  // Auto-close on screen resize larger than 1000px
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 1000 && isOpen) {
-        onClose();
-      }
-    };
+  // Clean navigation with graceful exit transition
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Normal browser behavior for modifier/external clicks
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
 
-    window.addEventListener("resize", handleResize, { passive: true });
-    return () => window.removeEventListener("resize", handleResize);
-  }, [isOpen, onClose]);
+    e.preventDefault();
+    onClose();
 
-  const isLinkActive = (href: string) => {
+    if (navTimerRef.current) clearTimeout(navTimerRef.current);
+
+    if (pathname === href) {
+      burgerRef.current?.focus({ preventScroll: true });
+      return;
+    }
+
+    navTimerRef.current = setTimeout(() => {
+      router.push(href);
+    }, 280);
+  };
+
+  const isCurrentPage = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
@@ -134,35 +176,30 @@ export function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label="Main menu"
-      className={`iris-menu ${isOpen ? "open" : ""}`}
-      style={{
-        pointerEvents: isOpen ? "auto" : "none",
-      }}
+      inert={!isOpen}
       aria-hidden={!isOpen}
+      className={`sh-menu min-[1001px]:hidden ${isOpen ? "open" : ""}`}
     >
-      <div className="iris-mi">
+      <div className="sh-mi">
         {/* Eyebrow Label */}
-        <div className="iris-eyebrow">Menu</div>
+        <div className="sh-eyebrow">Menu</div>
 
-        {/* Primary Navigation Links */}
-        <nav aria-label="Mobile Primary">
-          <ol>
-            {links.map((link, index) => {
-              const active = isLinkActive(link.href);
-              const formattedNumber = index < 9 ? `0${index + 1}` : `${index + 1}`;
+        {/* Big Numbered Rows */}
+        <nav aria-label="Primary mobile navigation">
+          <ol ref={listRef}>
+            {MENU_ROUTES.map((route, idx) => {
+              const active = isCurrentPage(route.href);
+              const num = String(idx + 1).padStart(2, "0");
               return (
-                <li
-                  key={link.href}
-                  style={{ "--i": index } as React.CSSProperties}
-                >
+                <li key={route.href} style={{ "--i": idx } as React.CSSProperties}>
                   <Link
-                    href={link.href}
-                    onClick={onClose}
+                    href={route.href}
+                    onClick={(e) => handleNavClick(e, route.href)}
                     className={active ? "on" : ""}
                     aria-current={active ? "page" : undefined}
                   >
-                    <span className="n">{formattedNumber}</span>
-                    <span className="t">{link.label}</span>
+                    <span className="n">{num}</span>
+                    <span className="t">{route.label}</span>
                     <span className="ar" aria-hidden="true">
                       ↗
                     </span>
@@ -173,11 +210,12 @@ export function MobileMenu({
           </ol>
         </nav>
 
-        {/* Footer Area with Stats, Note, Portrait & Actions */}
-        <div className="iris-mf">
-          <div className="iris-pr">
+        {/* Footer of Menu */}
+        <div className="sh-mf">
+          <div className="sh-pr">
+            {/* Left Fact & Handwritten note */}
             <div>
-              <div className="iris-bd">
+              <div className="sh-bd">
                 <b>7</b>
                 <span>
                   years teaching
@@ -185,7 +223,7 @@ export function MobileMenu({
                   experience
                 </span>
               </div>
-              <span className="iris-note">
+              <span className="sh-note">
                 keep it balanced!
                 <svg viewBox="0 0 80 30" aria-hidden="true">
                   <path d="M4 6c20 22 46 22 68 4" />
@@ -194,41 +232,46 @@ export function MobileMenu({
               </span>
             </div>
 
-            {/* Arch cutout frame with Sir Hammad's portrait */}
-            <div className="iris-arch">
+            {/* Arch Portrait of Sir Hammad peeking up */}
+            <div className="sh-arch">
               <Image
                 src="/images/portrait_transparent.png"
                 alt="Sir Sahibzada Hammad"
-                width={190}
-                height={200}
+                width={240}
+                height={280}
                 priority
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[130%] max-w-none object-contain pointer-events-none select-none"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[128%] max-w-none object-contain"
               />
             </div>
           </div>
 
-          {/* Quick Portal & Enrolment CTAs */}
-          <div className="iris-ac">
-            <Link href="/portal" onClick={onClose} className="iris-btn">
+          {/* Action Buttons: Log in + Enrol now */}
+          <div className="sh-ac">
+            <Link
+              href="/portal"
+              onClick={(e) => handleNavClick(e, "/portal")}
+              className="sh-mbtn"
+            >
               Log in
             </Link>
             <Link
               href="/courses"
-              onClick={onClose}
-              className="iris-btn iris-btn-gd"
+              onClick={(e) => handleNavClick(e, "/courses")}
+              className="sh-mbtn sh-mgd"
             >
               Enrol now ↗
             </Link>
           </div>
 
-          {/* Social and Attribution */}
-          <div className="iris-mt">
+          {/* Metadata Footer: Instagram & Credit */}
+          <div className="sh-mt">
             <a
               href={SITE_CONFIG.contact.instagram}
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:underline"
             >
-              Instagram ↗
+              Instagram ({SITE_CONFIG.contact.instagramHandle}) ↗
             </a>
             <em>made by Rayan</em>
           </div>
