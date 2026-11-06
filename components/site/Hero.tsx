@@ -5,19 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { HeroLearningLoop } from "@/components/site/HeroLearningLoop";
 
-function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
-  const isCentered = align === "center";
-
+function DesktopHeroCopy() {
   return (
-    <div
-      className={
-        isCentered
-          ? "w-full max-w-[640px] mx-auto text-center"
-          : "w-full max-w-[620px]"
-      }
-    >
+    <div className="w-full max-w-[620px]">
       {/* Eyebrow */}
-      <div className={`eyebrow-badge ${isCentered ? "mx-auto" : ""}`}>
+      <div className="eyebrow-badge">
         O Level · AS Level · A Level Accounting
       </div>
 
@@ -28,18 +20,14 @@ function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
       </h1>
 
       {/* Lead description */}
-      <p className="hero-lead mt-4 text-[#c3cde4] leading-relaxed max-w-[520px] mx-auto min-[1025px]:mx-0">
+      <p className="hero-lead mt-4 text-[#c3cde4] leading-relaxed max-w-[520px]">
         Learn with Sir Hammad through full recorded lectures, worked past
         papers and formulae booklets, then track every step in your own
         student portal.
       </p>
 
       {/* CTA Buttons */}
-      <div
-        className={`mt-7 flex flex-wrap items-center gap-3.5 ${
-          isCentered ? "justify-center" : ""
-        }`}
-      >
+      <div className="mt-7 flex flex-wrap items-center gap-3.5">
         <Link
           href="/courses"
           className="btn-gold hero-cta-btn font-bold rounded-full inline-flex items-center gap-2"
@@ -55,11 +43,7 @@ function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
       </div>
 
       {/* Trust bullets */}
-      <div
-        className={`mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-[13px] text-[#A9B6D3] ${
-          isCentered ? "justify-center" : ""
-        }`}
-      >
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-[13px] text-[#A9B6D3]">
         <span className="inline-flex items-center gap-2">
           <span className="w-2 h-2 rounded-[2px] bg-gold rotate-45 inline-block" />
           Full lecture recordings
@@ -89,7 +73,6 @@ function HeroStageContent({
       {/* Dev-only overlay (?debug=1): Stage edges & Arch rectangle */}
       {debug && (
         <>
-          {/* Stage edge outline */}
           <div
             className="absolute inset-0 pointer-events-none z-30"
             style={{
@@ -101,7 +84,6 @@ function HeroStageContent({
             </span>
           </div>
 
-          {/* Arch rectangle (left 58.0%, width 37.8%, top 17%, bottom 0) */}
           <div
             className="absolute pointer-events-none z-30"
             style={{
@@ -206,12 +188,13 @@ export function Hero() {
       )}
 
       {/* ============================================================
-          1. DESKTOP WIDE VIEW (aspect-ratio > 29/20, width > 600px):
-             Height-driven stage, top cropped under nav, copy on left
+          1. DESKTOP VIEW (>= 1000px):
+             Height-driven stage with zoom scaling, left feathering,
+             arch-centered portrait, chips, and glass card.
           ============================================================ */}
-      <div className="hero-wide-view w-full h-full relative">
+      <div className="hidden min-[1000px]:block w-full h-full relative">
         <div className="hero-copy">
-          <HeroCopy align="left" />
+          <DesktopHeroCopy />
         </div>
 
         <div className="hero-stage">
@@ -220,45 +203,94 @@ export function Hero() {
       </div>
 
       {/* ============================================================
-          2. STACKED VIEW FOR NON-WIDE WINDOWS (aspect-ratio <= 29/20, width > 600px):
-             Text first, stage below full-bleed with top mask, card below
+          2. ORIGINAL MOBILE VIEW (< 1000px):
+             100% Reverted to original look, copy, colors, fonts,
+             neon arch opacity-35 backdrop, mobile card, and learning loop.
           ============================================================ */}
-      <div className="hero-stacked-view w-full relative">
-        <div className="hero-copy">
-          <HeroCopy align="center" />
-        </div>
+      <div className="block min-[1000px]:hidden relative w-full pt-[130px] sm:pt-[150px] pb-16 overflow-hidden">
+        {/* Background Neon Arch image (Mobile) */}
+        <div
+          className="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-top bg-cover opacity-35 transition-opacity"
+          style={{
+            backgroundImage: "url('/images/hero_background_neon_arch.png')",
+          }}
+        />
 
-        <div className="relative w-full overflow-hidden">
-          <div className="hero-stage">
-            <HeroStageContent debug={debug} includeGlassCard={false} />
+        {/* Hero container */}
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 h-full flex flex-col justify-center">
+          <div className="grid grid-cols-1 gap-8 items-center">
+            {/* Copy & CTAs */}
+            <div className="w-full max-w-[620px] pt-4">
+              {/* Eyebrow */}
+              <div className="eyebrow-badge">
+                O Level · AS Level · A Level Accounting
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-[32px] min-[420px]:text-[38px] sm:text-[56px] leading-[1.04] text-white mt-3.5">
+                Where accounting{" "}
+                <span className="headline-highlight">finally balances.</span>
+              </h1>
+
+              {/* Lead description */}
+              <p className="mt-5 text-[#c3cde4] text-base sm:text-lg leading-relaxed max-w-[520px]">
+                Learn with Sir Hammad through full recorded lectures, worked past
+                papers and formulae booklets, then track every step in your own
+                student portal.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="mt-8 flex flex-wrap items-center gap-3.5">
+                <Link
+                  href="/courses"
+                  className="btn-gold px-7 py-3.5 text-sm font-bold rounded-full inline-flex items-center gap-2"
+                >
+                  Explore courses ↗
+                </Link>
+                <Link
+                  href="/about"
+                  className="btn-ghost px-7 py-3.5 text-sm font-bold rounded-full inline-flex items-center gap-2"
+                >
+                  Meet Sir Hammad
+                </Link>
+              </div>
+
+              {/* Trust bullets */}
+              <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-[13px] text-[#A9B6D3]">
+                <span className="inline-flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-[2px] bg-gold rotate-45 inline-block" />
+                  Full lecture recordings
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-[2px] bg-gold rotate-45 inline-block" />
+                  Past paper sessions
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-[2px] bg-gold rotate-45 inline-block" />
+                  Formulae booklets
+                </span>
+              </div>
+            </div>
+
+            {/* Mobile Portrait view & Learning Loop */}
+            <div className="flex flex-col items-center w-full max-w-[460px] mx-auto mt-6">
+              <div className="relative aspect-[4/5] w-full max-w-[340px] rounded-[999px_999px_30px_30px] overflow-hidden border border-gold/40 bg-gradient-to-b from-[#C62849]/60 via-[#541329]/80 to-[#0B1026] shadow-[0_40px_80px_-30px_rgba(198,40,73,0.6)]">
+                <Image
+                  src="/images/portrait_transparent.png"
+                  alt="Sir Sahibzada Hammad, accounting educator"
+                  width={400}
+                  height={500}
+                  priority
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[108%] max-w-none object-contain"
+                />
+              </div>
+
+              {/* Mobile Learning Loop Card */}
+              <div className="w-full mt-6">
+                <HeroLearningLoop />
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="w-full max-w-[480px] mx-auto mt-4 px-4 relative z-10">
-          <HeroLearningLoop />
-        </div>
-      </div>
-
-      {/* ============================================================
-          3. PHONE VIEW (width <= 600px):
-             Preserved Mobile Flow
-          ============================================================ */}
-      <div className="hero-mobile-view w-full pt-[104px] pb-12 px-5">
-        <HeroCopy align="left" />
-
-        <div className="relative aspect-[4/5] w-full max-w-[340px] mx-auto mt-8 rounded-[999px_999px_30px_30px] overflow-hidden border border-gold/40 bg-gradient-to-b from-[#C62849]/60 via-[#541329]/80 to-[#0B1026] shadow-[0_40px_80px_-30px_rgba(198,40,73,0.6)]">
-          <Image
-            src="/images/portrait_transparent.png"
-            alt="Sir Sahibzada Hammad, accounting educator"
-            width={400}
-            height={500}
-            priority
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[108%] max-w-none object-contain"
-          />
-        </div>
-
-        <div className="w-full max-w-[440px] mx-auto mt-6">
-          <HeroLearningLoop />
         </div>
       </div>
     </section>
