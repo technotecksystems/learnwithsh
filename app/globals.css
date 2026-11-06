@@ -15,6 +15,7 @@
   --wh: #F7F7FC;
   --mu: #A9B6D3;
   --bd: rgba(255, 255, 255, 0.11);
+  --nav-h: 72px;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   box-sizing: border-box;
@@ -622,6 +623,56 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =====================================================================
+   HERO STAGE (UNIFIED COORDINATE SYSTEM FOR DESKTOP & TABLET)
+   ===================================================================== */
+.hero-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1672 / 941;
+  background: url('/hero_background_neon_arch.png') center / 100% 100% no-repeat;
+  container-type: inline-size;
+}
+
+.hero-portrait {
+  position: absolute;
+  bottom: 0;
+  left: 55.4%;
+  width: 43%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.stage-chip-1 {
+  top: 26%;
+  right: 4.5%;
+  font-size: clamp(10px, 1.25cqw, 14px);
+  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  z-index: 5;
+}
+
+.stage-chip-2 {
+  bottom: 8%;
+  right: 40%;
+  font-size: clamp(9px, 1.05cqw, 12px);
+  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  z-index: 5;
+}
+.stage-chip-2 b {
+  font-size: clamp(18px, 2.2cqw, 28px);
+}
+
+.stage-chip-3 {
+  bottom: 30%;
+  right: 3%;
+  font-size: clamp(10px, 1.25cqw, 14px);
+  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  z-index: 5;
+}
+
+/* =====================================================================
    FULLSCREEN IRIS MOBILE NAVIGATION MENU & ASYMMETRIC BURGER TRIGGER
    ===================================================================== */
 html.lock {
@@ -680,15 +731,17 @@ html.lock {
   transform: translate(-50%, 0) rotate(-45deg);
 }
 
-/* ---------- Fullscreen Mobile Iris Menu ---------- */
+/* ---------- Fullscreen Mobile Iris Menu (Viewport Locked) ---------- */
 .mobile-iris-menu {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--vvh, 100svh);
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
   z-index: 99;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   pointer-events: none;
   visibility: hidden;
   background: radial-gradient(520px 420px at 100% 0, rgba(198, 40, 73, 0.5), transparent 65%),
@@ -716,13 +769,16 @@ html.lock {
 }
 
 .mi-container {
-  position: relative;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  padding: calc(96px + env(safe-area-inset-top, 0px)) 22px calc(22px + env(safe-area-inset-bottom, 0px));
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: calc(var(--nav-h, 72px) + env(safe-area-inset-top, 0px) + 8px)
+           clamp(16px, 5vw, 28px)
+           max(14px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
   max-width: 520px;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .menu-eyebrow {
@@ -735,6 +791,7 @@ html.lock {
   align-items: center;
   gap: 10px;
   margin-bottom: 6px;
+  flex-shrink: 0;
 }
 .menu-eyebrow::before {
   content: "";
@@ -743,14 +800,28 @@ html.lock {
   background: var(--gold);
 }
 
+.menu-nav {
+  height: 100%;
+  min-height: 0;
+  container-type: size;
+  overflow: hidden;
+}
+
 .menu-list {
-  list-style: none;
+  height: 100%;
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
   padding: 0;
   margin: 0;
+  list-style: none;
 }
+
 .menu-item {
+  height: 100%;
+  min-height: 0;
+  display: flex;
   opacity: 0;
-  transform: translateY(46px);
+  transform: translateY(30px);
   transition: opacity 0.2s, transform 0.2s;
 }
 .mobile-iris-menu.open .menu-item {
@@ -761,11 +832,13 @@ html.lock {
 }
 
 .menu-link {
+  height: 100%;
+  width: 100%;
   display: grid;
-  grid-template-columns: 38px 1fr auto;
+  grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 6px;
-  padding: 13px 0;
+  padding: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   position: relative;
   -webkit-tap-highlight-color: transparent;
@@ -791,12 +864,21 @@ html.lock {
   position: relative;
 }
 .menu-link .t {
-  font-size: clamp(34px, 11vw, 52px);
+  white-space: nowrap;
   line-height: 1;
   letter-spacing: -0.04em;
   color: #ffffff;
   position: relative;
   transition: color 0.3s, transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+  font-size: clamp(
+    22px,
+    min(
+      calc((100cqw - 96px) / 7.6),
+      calc(var(--row-h, 48px) * var(--row-scale, 1) * 0.62),
+      54px
+    ),
+    54px
+  );
 }
 .menu-link:active .t,
 .menu-link:hover .t {
@@ -806,13 +888,13 @@ html.lock {
 
 .menu-link .ar {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: min(38px, calc(var(--row-h, 48px) * var(--row-scale, 1) * 0.6));
+  height: min(38px, calc(var(--row-h, 48px) * var(--row-scale, 1) * 0.6));
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: grid;
   place-items: center;
-  font-size: 16px;
+  font-size: min(16px, calc(var(--row-h, 48px) * var(--row-scale, 1) * 0.35));
   color: #ffffff;
   transition: 0.3s;
 }
@@ -834,21 +916,22 @@ html.lock {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-left: 12px;
+  margin-left: 10px;
   vertical-align: middle;
   border: 1px solid rgba(255, 189, 89, 0.5);
   border-radius: 99px;
-  padding: 3px 9px;
+  padding: 2px 7px;
   white-space: nowrap;
 }
 
-/* Menu bottom block */
+/* Bottom block */
 .menu-footer {
   margin-top: auto;
-  padding-top: 24px;
+  padding-top: clamp(8px, 1.8svh, 18px);
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(20px);
   transition: opacity 0.2s, transform 0.2s;
+  flex-shrink: 0;
 }
 .mobile-iris-menu.open .menu-footer {
   opacity: 1;
@@ -861,21 +944,21 @@ html.lock {
   grid-template-columns: 1fr 148px;
   gap: 12px;
   align-items: end;
-  margin-bottom: 18px;
+  margin-bottom: clamp(10px, 2svh, 16px);
 }
 
 .teaching-badge {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: clamp(8px, 1.5svh, 12px) clamp(10px, 2vw, 14px);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   width: fit-content;
 }
 .teaching-badge b {
-  font-size: 30px;
+  font-size: clamp(24px, 4svh, 30px);
   line-height: 1;
   color: var(--gold);
 }
@@ -888,11 +971,11 @@ html.lock {
 .caveat-note {
   font-family: var(--font-caveat), cursive;
   font-weight: 700;
-  font-size: 28px;
+  font-size: clamp(22px, 3.5svh, 28px);
   line-height: 1;
   color: var(--pk);
   transform: rotate(-5deg);
-  margin-top: 14px;
+  margin-top: clamp(8px, 1.5svh, 14px);
   display: block;
 }
 .caveat-note svg {
@@ -908,7 +991,7 @@ html.lock {
 
 .portrait-arch {
   position: relative;
-  height: 155px;
+  height: min(18svh, 150px);
   border-radius: 999px 999px 0 0;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(198, 40, 73, 0.7), rgba(84, 19, 41, 0.9));
@@ -949,7 +1032,7 @@ html.lock {
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  padding: 15px 18px;
+  padding: clamp(12px, 2svh, 16px) 18px;
   font-weight: 700;
   font-size: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -980,18 +1063,13 @@ html.lock {
   transform: skewX(-20deg);
   animation: menuShineSweep 3.4s infinite;
 }
-@keyframes menuShineSweep {
-  to {
-    left: 140%;
-  }
-}
 
 .menu-meta-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
-  font-size: 12px;
+  margin-top: clamp(8px, 1.5svh, 14px);
+  font-size: 11px;
   color: var(--mu);
 }
 .menu-meta-row a {
@@ -1000,32 +1078,122 @@ html.lock {
   text-decoration: none;
 }
 
-@media (max-width: 370px) {
-  .menu-link .t {
-    font-size: clamp(28px, 9.5vw, 38px);
+/* Shedding rules by priority:
+   Priority 1 (@media max-height:700px or .shed-1): hide handwritten note
+   Priority 2 (@media max-height:620px or .shed-2): hide 7 years badge and portrait arch
+   Priority 3 (@media max-height:540px or .shed-3): hide eyebrow and instagram link (keep made by Rayan)
+*/
+@media (max-height: 700px) {
+  .caveat-note {
+    display: none !important;
   }
-  .menu-link {
-    padding: 10px 0;
+}
+.mobile-iris-menu.shed-1 .caveat-note {
+  display: none !important;
+}
+
+@media (max-height: 620px) {
+  .caveat-note,
+  .teaching-badge,
+  .portrait-arch,
+  .pr-row {
+    display: none !important;
   }
+}
+.mobile-iris-menu.shed-2 .caveat-note,
+.mobile-iris-menu.shed-2 .teaching-badge,
+.mobile-iris-menu.shed-2 .portrait-arch,
+.mobile-iris-menu.shed-2 .pr-row {
+  display: none !important;
+}
+
+@media (max-height: 540px) {
+  .caveat-note,
+  .teaching-badge,
+  .portrait-arch,
+  .pr-row,
+  .menu-eyebrow,
+  .menu-meta-row .insta-link {
+    display: none !important;
+  }
+  .menu-meta-row {
+    justify-content: center;
+  }
+}
+.mobile-iris-menu.shed-3 .caveat-note,
+.mobile-iris-menu.shed-3 .teaching-badge,
+.mobile-iris-menu.shed-3 .portrait-arch,
+.mobile-iris-menu.shed-3 .pr-row,
+.mobile-iris-menu.shed-3 .menu-eyebrow,
+.mobile-iris-menu.shed-3 .menu-meta-row .insta-link {
+  display: none !important;
+}
+.mobile-iris-menu.shed-3 .menu-meta-row {
+  justify-content: center;
+}
+
+/* Landscape phones: 2 columns */
+@media (max-height: 480px) and (orientation: landscape) {
   .mi-container {
-    padding-left: 16px;
-    padding-right: 16px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 20px;
+    row-gap: 6px;
+    padding-top: calc(var(--nav-h, 54px) + env(safe-area-inset-top, 0px) + 4px);
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    max-width: 860px;
+  }
+  .menu-eyebrow {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+  }
+  .menu-nav {
+    grid-column: 1;
+    height: 100%;
+  }
+  .menu-list {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    column-gap: 12px;
+  }
+  .menu-link .t {
+    font-size: clamp(16px, 3.5vw, 24px) !important;
+  }
+  .menu-footer {
+    grid-column: 2;
+    padding-top: 0;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
   }
   .pr-row {
-    grid-template-columns: minmax(0, 1fr) 125px;
+    margin-bottom: 6px;
+    grid-template-columns: 1fr 90px;
   }
   .portrait-arch {
-    height: 140px;
+    height: 80px;
   }
   .portrait-img {
-    bottom: -28px;
-    width: 120%;
+    bottom: -15px;
+  }
+  .caveat-note {
+    display: none !important;
   }
   .teaching-badge {
-    padding: 10px;
+    padding: 6px 10px;
   }
   .teaching-badge b {
-    font-size: 26px;
+    font-size: 20px;
+  }
+  .menu-action-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  .menu-meta-row {
+    margin-top: 4px;
   }
 }
 
