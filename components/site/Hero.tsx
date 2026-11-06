@@ -22,13 +22,13 @@ function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
       </div>
 
       {/* Headline */}
-      <h1 className="text-[32px] min-[420px]:text-[38px] sm:text-[54px] min-[1025px]:text-[clamp(34px,5.2cqw,76px)] leading-[1.04] text-white mt-3.5">
+      <h1 className="text-white mt-3.5">
         Where accounting{" "}
         <span className="headline-highlight">finally balances.</span>
       </h1>
 
       {/* Lead description */}
-      <p className="mt-4 text-[#c3cde4] text-base sm:text-lg min-[1025px]:text-[clamp(14px,1.35cqw,18px)] leading-relaxed max-w-[520px] mx-auto min-[1025px]:mx-0">
+      <p className="hero-lead mt-4 text-[#c3cde4] leading-relaxed max-w-[520px] mx-auto min-[1025px]:mx-0">
         Learn with Sir Hammad through full recorded lectures, worked past
         papers and formulae booklets, then track every step in your own
         student portal.
@@ -42,13 +42,13 @@ function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
       >
         <Link
           href="/courses"
-          className="btn-gold px-7 py-3.5 text-sm font-bold rounded-full inline-flex items-center gap-2"
+          className="btn-gold hero-cta-btn font-bold rounded-full inline-flex items-center gap-2"
         >
           Explore courses ↗
         </Link>
         <Link
           href="/about"
-          className="btn-ghost px-7 py-3.5 text-sm font-bold rounded-full inline-flex items-center gap-2"
+          className="btn-ghost hero-cta-btn font-bold rounded-full inline-flex items-center gap-2"
         >
           Meet Sir Hammad
         </Link>
@@ -77,26 +77,47 @@ function HeroCopy({ align = "left" }: { align?: "left" | "center" }) {
   );
 }
 
-function HeroStageContent({ debug }: { debug: boolean }) {
+function HeroStageContent({
+  debug,
+  includeGlassCard = false,
+}: {
+  debug: boolean;
+  includeGlassCard?: boolean;
+}) {
   return (
     <>
-      {/* Temporary Debug Outline (?debug=1) */}
+      {/* Dev-only overlay (?debug=1): Stage edges & Arch rectangle */}
       {debug && (
-        <div
-          className="absolute pointer-events-none z-30"
-          style={{
-            left: "58%",
-            width: "37.8%",
-            top: "17%",
-            bottom: "0",
-            border: "2px dashed #00FF66",
-            backgroundColor: "rgba(0, 255, 102, 0.08)",
-          }}
-        >
-          <span className="absolute top-2 left-2 text-[10px] font-mono text-[#00FF66] bg-black/80 px-1 rounded">
-            Arch (58.0% - 95.8%, centre 76.9%)
-          </span>
-        </div>
+        <>
+          {/* Stage edge outline */}
+          <div
+            className="absolute inset-0 pointer-events-none z-30"
+            style={{
+              border: "1px solid rgba(0, 255, 102, 0.6)",
+            }}
+          >
+            <span className="absolute bottom-2 right-2 text-[10px] font-mono text-[#00FF66] bg-black/80 px-1.5 py-0.5 rounded">
+              Stage edge (var(--W))
+            </span>
+          </div>
+
+          {/* Arch rectangle (left 58.0%, width 37.8%, top 17%, bottom 0) */}
+          <div
+            className="absolute pointer-events-none z-30"
+            style={{
+              left: "58%",
+              width: "37.8%",
+              top: "17%",
+              bottom: "0",
+              border: "2px dashed #00FF66",
+              backgroundColor: "rgba(0, 255, 102, 0.08)",
+            }}
+          >
+            <span className="absolute top-2 left-2 text-[10px] font-mono text-[#00FF66] bg-black/80 px-1 rounded">
+              Arch bounds (58.0% - 95.8%, centre 76.9%, top 17%)
+            </span>
+          </div>
+        </>
       )}
 
       {/* Transparent Portrait of Sir Hammad (Centred at 76.9% on 1672x941 artwork) */}
@@ -130,6 +151,13 @@ function HeroStageContent({ debug }: { debug: boolean }) {
       <div className="hero-chip stage-chip-3 pointer-events-auto">
         <span className="text-gold mr-1.5">✓</span> Past papers
       </div>
+
+      {/* Glass card on wide desktop inside the stage */}
+      {includeGlassCard && (
+        <div className="stage-glass-card">
+          <HeroLearningLoop />
+        </div>
+      )}
     </>
   );
 }
@@ -144,60 +172,80 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden">
-      {/* ============================================================
-          1. DESKTOP VIEW (>= 1025px): Stage is the unit coordinate space
-          ============================================================ */}
-      <div className="hidden min-[1025px]:block relative w-full pt-[90px] pb-8 overflow-hidden">
-        <div className="max-w-[1520px] mx-auto px-4 relative">
-          <div className="hero-stage">
-            {/* Left 52% overlay for copy */}
-            <div className="absolute left-[3%] min-[1280px]:left-[4%] top-1/2 -translate-y-1/2 w-[50%] max-w-[620px] z-10 pointer-events-auto">
-              <HeroCopy align="left" />
-            </div>
-
-            {/* Desktop HeroLearningLoop glass card */}
-            <div className="absolute left-[47%] min-[1280px]:left-[49%] bottom-[3%] w-[33%] max-w-[440px] pointer-events-auto z-10">
-              <HeroLearningLoop />
-            </div>
-
-            {/* Stage content: arch bounds, portrait, chips */}
-            <HeroStageContent debug={debug} />
+    <section className="hero">
+      {/* Dev-only overlay (?debug=1): Nav bottom line and Hero bottom line */}
+      {debug && (
+        <div className="pointer-events-none fixed inset-0 z-50">
+          <div
+            style={{
+              position: "absolute",
+              top: "var(--nav-h, 72px)",
+              left: 0,
+              right: 0,
+              borderBottom: "2px dashed #00FF66",
+            }}
+          >
+            <span className="bg-black/90 text-[#00FF66] text-[10px] font-mono px-2 py-0.5 rounded ml-4">
+              Nav bottom (var(--nav-h))
+            </span>
           </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "var(--H, 100vh)",
+              left: 0,
+              right: 0,
+              borderBottom: "2px solid #00FF66",
+            }}
+          >
+            <span className="bg-black/90 text-[#00FF66] text-[10px] font-mono px-2 py-0.5 rounded ml-4">
+              Hero bottom / Fold (var(--H))
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================
+          1. DESKTOP WIDE VIEW (aspect-ratio > 29/20, width > 600px):
+             Height-driven stage, top cropped under nav, copy on left
+          ============================================================ */}
+      <div className="hero-wide-view w-full h-full relative">
+        <div className="hero-copy">
+          <HeroCopy align="left" />
+        </div>
+
+        <div className="hero-stage">
+          <HeroStageContent debug={debug} includeGlassCard={true} />
         </div>
       </div>
 
       {/* ============================================================
-          2. IPAD / TABLET VIEW (601px to 1024px): STACKED Unit Stage
+          2. STACKED VIEW FOR NON-WIDE WINDOWS (aspect-ratio <= 29/20, width > 600px):
+             Text first, stage below full-bleed with top mask, card below
           ============================================================ */}
-      <div className="hidden min-[601px]:max-[1024px]:block relative w-full pt-[110px] pb-12 overflow-hidden">
-        {/* Text block first (full width, max-width 640px, normal flow) */}
-        <div className="max-w-[640px] mx-auto px-6 text-center">
+      <div className="hero-stacked-view w-full relative">
+        <div className="hero-copy">
           <HeroCopy align="center" />
         </div>
 
-        {/* Stage full-bleed beneath it with margin-top: -6vw and top gradient fade */}
-        <div className="relative w-full overflow-hidden mt-[-6vw]">
-          <div className="absolute top-0 left-0 right-0 h-[24%] bg-gradient-to-b from-[#0B1026] to-transparent z-10 pointer-events-none" />
+        <div className="relative w-full overflow-hidden">
           <div className="hero-stage">
-            <HeroStageContent debug={debug} />
+            <HeroStageContent debug={debug} includeGlassCard={false} />
           </div>
         </div>
 
-        {/* "Your learning, in motion" glass card below stage (no overlap with portrait) */}
         <div className="w-full max-w-[480px] mx-auto mt-4 px-4 relative z-10">
           <HeroLearningLoop />
         </div>
       </div>
 
       {/* ============================================================
-          3. PHONE VIEW (<= 600px): Preserved Mobile Flow
+          3. PHONE VIEW (width <= 600px):
+             Preserved Mobile Flow
           ============================================================ */}
-      <div className="block min-[601px]:hidden relative w-full pt-[104px] pb-12 px-5">
-        {/* Text Block */}
+      <div className="hero-mobile-view w-full pt-[104px] pb-12 px-5">
         <HeroCopy align="left" />
 
-        {/* Mobile Arch Portrait Card */}
         <div className="relative aspect-[4/5] w-full max-w-[340px] mx-auto mt-8 rounded-[999px_999px_30px_30px] overflow-hidden border border-gold/40 bg-gradient-to-b from-[#C62849]/60 via-[#541329]/80 to-[#0B1026] shadow-[0_40px_80px_-30px_rgba(198,40,73,0.6)]">
           <Image
             src="/images/portrait_transparent.png"
@@ -209,7 +257,6 @@ export function Hero() {
           />
         </div>
 
-        {/* Learning Loop beneath it */}
         <div className="w-full max-w-[440px] mx-auto mt-6">
           <HeroLearningLoop />
         </div>

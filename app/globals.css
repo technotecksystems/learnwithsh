@@ -623,14 +623,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =====================================================================
-   HERO STAGE (UNIFIED COORDINATE SYSTEM FOR DESKTOP & TABLET)
+   HERO CONTAINER & HEIGHT-DRIVEN SINGLE STAGE (DESKTOP & RESPONSIVE)
    ===================================================================== */
-.hero-stage {
+.hero {
+  --H: max(100svh, 640px);
   position: relative;
-  width: 100%;
+  height: var(--H);
+  overflow: hidden;
+  background-color: #050a1e;
+  background-image: radial-gradient(ellipse 45% 40% at 0% 0%, rgba(198, 40, 73, 0.35) 0%, transparent 70%);
+  background-repeat: no-repeat;
+}
+
+.hero-stage {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  --W: clamp( calc(var(--H) * 1.7769), 100vw, calc(var(--H) * 2.13) );
+  width: var(--W);
   aspect-ratio: 1672 / 941;
   background: url('/hero_background_neon_arch.png') center / 100% 100% no-repeat;
   container-type: inline-size;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 12%);
 }
 
 .hero-portrait {
@@ -648,16 +663,16 @@ h1, h2, h3, h4, h5, h6 {
 .stage-chip-1 {
   top: 26%;
   right: 4.5%;
-  font-size: clamp(10px, 1.25cqw, 14px);
-  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  font-size: clamp(11px, 1.05cqw, 14px);
+  padding: clamp(6px, 0.75cqw, 10px) clamp(10px, 1.2cqw, 16px);
   z-index: 5;
 }
 
 .stage-chip-2 {
   bottom: 8%;
   right: 40%;
-  font-size: clamp(9px, 1.05cqw, 12px);
-  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  font-size: clamp(10px, 0.95cqw, 13px);
+  padding: clamp(6px, 0.75cqw, 10px) clamp(10px, 1.2cqw, 16px);
   z-index: 5;
 }
 .stage-chip-2 b {
@@ -667,9 +682,133 @@ h1, h2, h3, h4, h5, h6 {
 .stage-chip-3 {
   bottom: 30%;
   right: 3%;
-  font-size: clamp(10px, 1.25cqw, 14px);
-  padding: clamp(5px, 0.75cqw, 10px) clamp(8px, 1.2cqw, 16px);
+  font-size: clamp(11px, 1.05cqw, 14px);
+  padding: clamp(6px, 0.75cqw, 10px) clamp(10px, 1.2cqw, 16px);
   z-index: 5;
+}
+
+.stage-glass-card {
+  position: absolute;
+  left: 47%;
+  bottom: 3%;
+  width: 33%;
+  max-width: 38cqw;
+  z-index: 10;
+  pointer-events: auto;
+}
+@media (min-width: 1280px) {
+  .stage-glass-card {
+    left: 49%;
+  }
+}
+
+.hero-copy {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: min(52%, 760px);
+  padding-top: calc(var(--nav-h, 72px) + env(safe-area-inset-top, 0px) + clamp(24px, 4svh, 56px));
+  padding-left: clamp(24px, 4.5vw, 72px);
+  padding-right: 16px;
+  align-self: start;
+  z-index: 10;
+}
+
+.hero-copy h1 {
+  font-size: clamp(40px, min(5.4vw, 11svh), 96px);
+  line-height: 1.04;
+}
+
+.hero-copy p.hero-lead {
+  font-size: clamp(15px, min(1.15vw, 2.2svh), 20px);
+  line-height: 1.5;
+}
+
+.hero-copy .hero-cta-btn {
+  font-size: clamp(13px, 1.4svh, 15px);
+  padding: clamp(10px, 1.4svh, 14px) clamp(20px, 2vw, 28px);
+}
+
+/* Glass card reduction when viewport height is tight */
+@media (max-height: 840px) and (min-width: 601px) {
+  .stage-glass-card .sh-learning-loop__caption {
+    display: none;
+  }
+  .stage-glass-card .sh-learning-loop {
+    min-height: auto;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+  .stage-glass-card .sh-learning-loop__content {
+    min-height: auto;
+  }
+}
+
+/* =====================================================================
+   RESPONSIVE BREAKPOINTS (WIDE vs STACKED vs PHONE)
+   ===================================================================== */
+.hero-wide-view {
+  display: block;
+}
+.hero-stacked-view {
+  display: none;
+}
+.hero-mobile-view {
+  display: none;
+}
+
+@media (max-aspect-ratio: 29/20) and (min-width: 601px) {
+  .hero-wide-view {
+    display: none !important;
+  }
+  .hero-stacked-view {
+    display: block !important;
+  }
+  .hero {
+    height: auto !important;
+    min-height: 100svh;
+    overflow: visible;
+    padding-top: calc(var(--nav-h, 72px) + env(safe-area-inset-top, 0px) + 24px);
+    padding-bottom: 48px;
+    background-color: #050a1e;
+  }
+  .hero-stage {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    margin-top: -6vw;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 24%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 24%);
+  }
+  .hero-copy {
+    position: relative;
+    left: auto;
+    top: auto;
+    max-width: 640px;
+    margin: 0 auto;
+    padding-top: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+    text-align: center;
+    align-self: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-wide-view {
+    display: none !important;
+  }
+  .hero-stacked-view {
+    display: none !important;
+  }
+  .hero-mobile-view {
+    display: block !important;
+  }
+  .hero {
+    height: auto !important;
+    overflow: visible;
+  }
 }
 
 /* =====================================================================
