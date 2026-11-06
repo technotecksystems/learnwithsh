@@ -1148,7 +1148,7 @@ html.lock {
 }
 .portrait-img {
   position: absolute;
-  bottom: -32px;
+  bottom: -58px;
   left: 50%;
   width: 120%;
   max-width: none;
@@ -1316,7 +1316,7 @@ html.lock {
     height: 80px;
   }
   .portrait-img {
-    bottom: -15px;
+    bottom: -32px;
   }
   .caveat-note {
     display: none !important;
